@@ -42,6 +42,8 @@ class MainActivity : AppCompatActivity() {
             }
             result = nb1.toInt() + nb2.toInt()
             textView.text = result.toString()
+            number1.setText("")
+            number2.setText("")
         }
 
         subtraction.setOnClickListener {
@@ -53,6 +55,9 @@ class MainActivity : AppCompatActivity() {
             }
             result = nb1.toInt() - nb2.toInt()
             textView.text = result.toString()
+            // clear input
+            number1.setText("")
+            number2.setText("")
         }
 
         multiplication.setOnClickListener {
@@ -64,17 +69,26 @@ class MainActivity : AppCompatActivity() {
             }
             result = nb1.toInt() * nb2.toInt()
             textView.text = result.toString()
+            number1.setText("")
+            number2.setText("")
         }
 
         division.setOnClickListener {
             val nb1 = number1.text.toString()
             val nb2 = number2.text.toString()
             if (nb1.isEmpty() || nb2.isEmpty()) {
-                Toast.makeText(this@MainActivity, "vui long nhap", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "vui long nhap", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+            }
+            if (nb2.toInt() == 0){
+                Toast.makeText(this@MainActivity, "Invalid", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
             result = nb1.toInt() / nb2.toInt()
             textView.text = result.toString()
+            number1.setText("")
+            number2.setText("")
         }
     }
 }
