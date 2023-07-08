@@ -1,5 +1,7 @@
 package com.android.sharepreference
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -17,6 +19,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnLogin: Button
     private lateinit var displayText: TextView
     private lateinit var iconDelete: ImageView
+    private var sharePreference: SharedPreferences? = null
+    private var editor: SharedPreferences.Editor? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +33,23 @@ class MainActivity : AppCompatActivity() {
         displayText = findViewById(R.id.display)
         iconDelete = findViewById(R.id.delete)
 
+        sharePreference = getSharedPreferences("app_preference", MODE_PRIVATE)
+        editor = sharePreference?.edit()
+
+        // ***** check null use ?: ...
+//        val usernamePreferences = sharePreference?.getString("username","") ?: ""
+//        val passwordPreferences = sharePreference?.getString("password","") ?: ""
+//        val isCheckedPreferences = sharePreference?.getBoolean("isChecked",false) ?: false
+
+        // *************  check null use extension kotlin
+        sharePreference.let {
+            val usernamePreferences = it?.getString("username", "")
+            val passwordPreferences = it?.getString("password", "")
+            val isCheckedPreferences = it?.getBoolean("isChecked", false)
+            editUserName.setText(usernamePreferences)
+            editPassword.setText(passwordPreferences)
+            checkBox.isChecked = isCheckedPreferences == true
+        }
 
         // Yeu cau
         // 1 - Nếu đăng nhập thành công và có chọn vào check box thì lưu tài khoản
@@ -47,10 +68,18 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (userName == "vonhuvinh149@gmail.com" && password == "khongten123") {
+            if (userName == "vonhuvinh149" && password == "khongten123") {
                 Toast.makeText(this@MainActivity, "input success", Toast.LENGTH_SHORT).show()
-                if (checked){
-
+                if (checked) {
+                    editor?.putString("username", userName)
+                    editor?.putString("password", password)
+                    editor?.putBoolean("isChecked", true)
+                    editor?.apply()
+                } else {
+                    editor?.remove("username")
+                    editor?.remove("password")
+                    editor?.remove("isChecked")
+                    editor?.apply()
                 }
             } else {
                 Toast.makeText(
