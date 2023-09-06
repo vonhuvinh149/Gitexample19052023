@@ -93,6 +93,7 @@ class MyService : Service() {
         // action
         val intentStart = Intent(this@MyService, MainActivity::class.java)
         intentStart.putExtra(AppConstant.NOTIFICATION_KEY, AppConstant.NOTIFICATION_START)
+        intent.putExtra("check" , "true")
 
         val pendingIntentStart = PendingIntent.getActivity(
             context,
@@ -106,7 +107,7 @@ class MyService : Service() {
             val notificationChannel = NotificationChannel(
                 CHANNEL_ID,
                 "Version New",
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationManager.createNotificationChannel(notificationChannel)
         }
@@ -131,7 +132,7 @@ class MyService : Service() {
         }
     }
 
-    private fun getCount(): Int {
+    fun getCount(): Int {
         return count
     }
 
