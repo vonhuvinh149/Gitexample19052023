@@ -81,8 +81,6 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
-
-
     private fun mapping() {
         btnStart = findViewById(R.id.btn_start)
         btnStop = findViewById(R.id.btn_stop)

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/img" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:padding="10dp"
+        android:weightSum="4"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnLogin"
+            android:textColor="#ffffff"
+            android:text="Đăng Nhập"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_button_drawable" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_marginLeft="10dp"
+            android:id="@+id/btnRegis"
+            android:layout_weight="1"
+            android:background="@drawable/custom_button_register"
+            android:text="Đăng Kí"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <ImageView
+        android:scaleType="matrix"
+        android:src="@drawable/logo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/img_1"
+        android:layout_width="120dp"
+        android:layout_height="120dp" />
+
+    <LinearLayout
+        android:layout_centerVertical="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:src=""
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

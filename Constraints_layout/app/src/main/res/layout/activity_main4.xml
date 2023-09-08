@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:background="#DFDBDB">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3"
+        android:id="@+id/guide1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btn1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="button 1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/guide1"
+        app:layout_constraintBottom_toTopOf="@+id/zoom"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/zoom"
+        android:text="z o o m"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn1"
+        app:layout_constraintRight_toRightOf="@+id/guide1"
+        app:layout_constraintBottom_toTopOf="@+id/opacity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/opacity"
+        android:text="opacity"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/zoom"
+        app:layout_constraintRight_toRightOf="@+id/guide1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="12dp"
+        android:background="#090909"
+        app:layout_constraintRight_toRightOf="parent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/img"
+        app:layout_constraintLeft_toRightOf="@+id/guide1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

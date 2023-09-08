@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         sharePreference = getSharedPreferences("app_preference", MODE_PRIVATE)
         editor = sharePreference?.edit()
 
-        // ***** check null use ?: ...
+        // ***** e check null us?: ...
 //        val usernamePreferences = sharePreference?.getString("username","") ?: ""
 //        val passwordPreferences = sharePreference?.getString("password","") ?: ""
 //        val isCheckedPreferences = sharePreference?.getBoolean("isChecked",false) ?: false
@@ -64,12 +64,20 @@ class MainActivity : AppCompatActivity() {
             val checked = checkBox.isChecked ?: false
 
             if (userName.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this@MainActivity, "input valid", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@MainActivity,
+                    "input valid",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
             if (userName == "vonhuvinh149" && password == "khongten123") {
-                Toast.makeText(this@MainActivity, "input success", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@MainActivity,
+                    "input success",
+                    Toast.LENGTH_SHORT
+                ).show()
                 if (checked) {
                     editor?.putString("username", userName)
                     editor?.putString("password", password)
@@ -89,6 +97,5 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
         }
-
     }
 }

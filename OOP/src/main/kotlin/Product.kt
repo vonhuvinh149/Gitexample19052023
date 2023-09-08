@@ -1,0 +1,1 @@
+data class Product(var name: String, var color: String, var price: Float)
