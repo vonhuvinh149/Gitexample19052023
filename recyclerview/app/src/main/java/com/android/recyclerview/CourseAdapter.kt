@@ -26,7 +26,8 @@ class CourseAdapter(
             this.txtDesc.text = course.desc
         }
 
-        imageDelete.setOnClickListener {
+        imageDelete.setOnClickListener
+        {
             init {
                 onClickListener?.onClick(adapterPosition)
             }
