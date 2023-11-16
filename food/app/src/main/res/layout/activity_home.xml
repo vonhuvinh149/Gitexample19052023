@@ -17,9 +17,9 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        app:itemBackground="@color/blue"
+        app:itemBackground="@color/white"
         app:itemIconSize="32sp"
-        app:itemIconTint="@color/white"
+        app:itemIconTint="@color/blue"
         app:labelVisibilityMode="unlabeled"
         app:menu="@menu/menu_navigation_bottom" />
 </RelativeLayout>

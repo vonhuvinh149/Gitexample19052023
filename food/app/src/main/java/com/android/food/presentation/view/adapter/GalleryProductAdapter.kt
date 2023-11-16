@@ -11,7 +11,7 @@ import com.android.food.common.AppConstant
 import com.bumptech.glide.Glide
 
 class GalleryProductAdapter(
-     val context: Context,
+    val context: Context,
     private val galleryList: MutableList<String> = mutableListOf()
 ) : RecyclerView.Adapter<GalleryProductAdapter.GalleryViewHolder>() {
 
@@ -30,7 +30,11 @@ class GalleryProductAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.layout_item_gallery, parent, false)
+        val view = layoutInflater.inflate(
+            R.layout.layout_item_gallery,
+            parent,
+            false
+        )
         return GalleryViewHolder(view)
     }
 

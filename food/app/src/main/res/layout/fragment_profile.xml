@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:alpha=".5"
-        android:background="@color/light_dark"
+        android:background="@color/blue"
         app:layout_constraintBottom_toBottomOf="@+id/img_banner"
         app:layout_constraintTop_toTopOf="@+id/img_banner" />
 
@@ -148,11 +148,11 @@
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:id="@+id/btn_update_information"
-        android:textColor="@color/white"
-        android:text="Thiết Lập thông tin"
+        android:id="@+id/btn_register"
+        android:textColor="@color/black"
+        android:text="Đăng Kí Tài Khoản"
         app:layout_constraintTop_toBottomOf="@+id/information"
-        android:background="@color/light_dark"
+        android:background="@drawable/background_border"
         android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -164,7 +164,7 @@
         android:id="@+id/btn_logout_or_login"
         android:textColor="@color/white"
         android:text="Đăng xuất"
-        app:layout_constraintTop_toBottomOf="@+id/btn_update_information"
+        app:layout_constraintTop_toBottomOf="@+id/btn_register"
         android:background="@color/primary"
         android:padding="10dp"
         android:layout_width="match_parent"

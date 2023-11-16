@@ -140,7 +140,6 @@ class HistoryFragment(private val context: Context) : Fragment() {
         productViewModel.executeGetCart()
         historyVIewModel.requestHistoryOrder()
     }
-
     private fun updateBadge(cart: Cart) {
         val totalProduct = cart.products.size
         if (totalProduct == 0) {
@@ -153,25 +152,11 @@ class HistoryFragment(private val context: Context) : Fragment() {
                 .toString()
         }
     }
-
     private fun customToolbar() {
         val initActivity = activity as? AppCompatActivity
         initActivity?.setSupportActionBar(toolBar)
+        toolBar?.setTitleTextColor(Color.WHITE)
         initActivity?.supportActionBar?.title = "Lịch sử mua hàng"
-        initActivity?.supportActionBar?.title.let {
-            val spannableString = SpannableString(it)
-            if (it != null) {
-                spannableString.setSpan(
-                    ForegroundColorSpan(Color.BLUE),
-                    0,
-                    it.length,
-                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
-                )
-            }
-            initActivity?.supportActionBar?.title = spannableString
-        }
         setHasOptionsMenu(true)
     }
-
-
 }

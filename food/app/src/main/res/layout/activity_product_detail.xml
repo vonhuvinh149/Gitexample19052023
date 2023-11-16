@@ -11,7 +11,7 @@
         android:id="@+id/toolbar_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/blue"
         android:gravity="center"
         android:paddingEnd="10dp"
         android:titleTextColor="@color/primary"
@@ -21,28 +21,28 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:layout_below="@id/toolbar_back"
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar_back"
         android:gravity="center">
 
         <ImageView
             android:id="@+id/img_detail"
             android:layout_width="match_parent"
-            android:scaleType="centerCrop"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_shape" />
+            android:background="@drawable/background_shape"
+            android:scaleType="centerCrop" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/content_view"
-        android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/image_view"
         android:layout_marginTop="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/tv_name_product"
@@ -53,67 +53,71 @@
 
         <TextView
             android:id="@+id/tv_price"
-            android:text="Giá: 40.000đ"
-            android:textSize="20sp"
-            android:textColor="@color/light_dark"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Giá: 40.000đ"
+            android:textColor="@color/light_dark"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tv_address"
-            android:text="Địa chỉ: Hà lam - Thăng Bình - Quảng Nam"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Địa chỉ: Hà lam - Thăng Bình - Quảng Nam" />
 
         <TextView
-            android:text="Ngày mở bán : "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <LinearLayout
-            android:gravity="center"
-            android:layout_margin="15dp"
-            android:id="@+id/btn_add_to_cart"
-            android:orientation="horizontal"
-            android:background="@color/primary"
-            android:layout_width="match_parent"
-            android:padding="10dp"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:src="@drawable/ic_cart"
-                android:layout_width="30dp"
-                android:layout_height="30dp"/>
-            <TextView
-                android:layout_marginStart="8dp"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="22sp"
-                android:text="Thêm vào giỏ hàng"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:text="Ngày mở bán : " />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_add_to_cart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/content_view"
+        android:layout_margin="15dp"
+        android:background="@color/primary"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_cart" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
+            android:text="Thêm vào giỏ hàng"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/tv_gallery"
-        android:padding="5dp"
-        android:textColor="@color/white"
-        android:background="@color/red"
-        android:layout_below="@+id/content_view"
-        android:text="Hình ảnh liên quan"
-        android:textStyle="bold"
-        android:textSize="16sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_add_to_cart"
+        android:background="@color/red"
+        android:padding="5dp"
+        android:text="Hình ảnh liên quan"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="10dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:id="@+id/recycler_view_gallery"
-        tools:listitem="@layout/layout_item_gallery"
-        android:layout_below="@id/tv_gallery"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_gallery"
+        android:layout_marginTop="15dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/layout_item_gallery" />
 
     <include
         android:id="@+id/layout_loading"

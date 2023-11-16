@@ -1,9 +1,11 @@
 package com.android.food.presentation.view.activity
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -29,9 +31,10 @@ class CartActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private var totalPrice: TextView? = null
     private var btnOrder: TextView? = null
+    private var btnRedirectProduct : TextView? = null
+    private var tvRedirectProduct : LinearLayout? = null
     private lateinit var cartViewModel: CartViewModel
     private lateinit var layoutLoading: LinearLayout
-    private var tvMsg: TextView? = null
     private lateinit var cartID: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +57,6 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun event() {
-
         cartAdapter.setOnClickDownQuantity(object : CartAdapter.OnItemClickProduct {
             override fun onClick(position: Int) {
                 ToastUtils.showToast(this@CartActivity, "down")
@@ -92,9 +94,10 @@ class CartActivity : AppCompatActivity() {
         toolBar = findViewById(R.id.tool_bar)
         recyclerView = findViewById(R.id.recycler_view_cart_item)
         totalPrice = findViewById(R.id.total_price)
-        tvMsg = findViewById(R.id.cart_msg)
         layoutLoading = findViewById(R.id.layout_loading)
         btnOrder = findViewById(R.id.btn_order)
+        btnRedirectProduct = findViewById(R.id.btn_buy_product)
+        tvRedirectProduct = findViewById(R.id.redirect_product)
         cartAdapter = CartAdapter(context = this@CartActivity)
         recyclerView.adapter = cartAdapter
         recyclerView.setHasFixedSize(true)
@@ -102,10 +105,10 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun customToolBar() {
-        val btnBack = R.drawable.ic_back
         setSupportActionBar(toolBar)
+        toolBar.setTitleTextColor(Color.WHITE)
         supportActionBar?.title = "Giỏ hàng"
-        supportActionBar?.setHomeAsUpIndicator(btnBack)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -147,7 +150,6 @@ class CartActivity : AppCompatActivity() {
                         "%s VND",
                         StringUtils.formatCurrency(0)
                     )
-                    tvMsg?.text = it.message ?: ""
                 }
 
                 is AppResource.Error -> {
@@ -156,14 +158,18 @@ class CartActivity : AppCompatActivity() {
             }
         }
 
-//        cartViewModel.getLoadingLiveData().observe(this) {
-//            layoutLoading.isGone = !it
-//        }
-
         productViewModel.getCartLiveData().observe(this) {
             when (it) {
                 is AppResource.Success -> {
-                    cartAdapter.updateAdapter(it.data?.products)
+
+                    if (it.data?.products?.size!! > 0){
+                        tvRedirectProduct?.visibility = View.GONE
+                        cartAdapter.updateAdapter(it.data.products)
+                    }else {
+                        tvRedirectProduct?.visibility = View.VISIBLE
+                        cartAdapter.updateAdapter(it.data.products)
+                        recyclerView.visibility = View.GONE
+                    }
                     totalPrice?.text = String.format(
                         "%s VND",
                         StringUtils.formatCurrency(it.data?.price?.toInt() ?: 0)

@@ -150,23 +150,11 @@ class ProductFragment(private val context: Context) : Fragment() {
             }
         })
     }
-
     private fun customToolbar() {
         val initActivity = activity as? AppCompatActivity
         initActivity?.setSupportActionBar(toolBar)
         initActivity?.supportActionBar?.title = "Danh sách món ăn"
-        initActivity?.supportActionBar?.title.let {
-            val spannableString = SpannableString(it)
-            if (it != null) {
-                spannableString.setSpan(
-                    ForegroundColorSpan(Color.BLUE),
-                    0,
-                    it.length,
-                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
-                )
-            }
-            initActivity?.supportActionBar?.title = spannableString
-        }
+        toolBar?.setTitleTextColor(Color.WHITE)
         setHasOptionsMenu(true)
     }
 

@@ -32,7 +32,6 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var buttonSignIn: TextView
     private lateinit var tvRegister: TextView
     private lateinit var layoutLoading: LinearLayout
-    private val myRef = Firebase.database.getReference("image")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +58,6 @@ class SignInActivity : AppCompatActivity() {
             when (it) {
                 is AppResource.Success -> {
                     ToastUtils.showToast(this, "Login success!!!")
-//                    setFirebase(it.data?.email.toString())
                     val intent = Intent(this@SignInActivity, HomeActivity::class.java)
                     startActivity(intent)
                     finish()
@@ -68,21 +66,6 @@ class SignInActivity : AppCompatActivity() {
                 is AppResource.Error -> ToastUtils.showToast(this, it.message.toString())
             }
         }
-    }
-
-    private fun setFirebase(email : String ){
-        myRef.addListenerForSingleValueEvent(object:ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (!snapshot.hasChild(email)){
-                    myRef.child(email).setValue("https://s.net.vn/EN5L")
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseData", "Failed to read value.", error.toException())
-            }
-
-        })
     }
 
     private fun event() {
@@ -109,7 +92,7 @@ class SignInActivity : AppCompatActivity() {
                 )
             )
             tvRegister.text = this
-            tvRegister.highlightColor = Color.TRANSPARENT
+            tvRegister.highlightColor = Color.BLUE
             tvRegister.movementMethod = LinkMovementMethod.getInstance()
         }
     }

@@ -22,7 +22,6 @@ class CartAdapter(
     private var onItemClickDownQuantity: OnItemClickProduct? = null
     private var onItemClickUpQuantity: OnItemClickProduct? = null
 
-
     inner class CartViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val tvName: TextView = view.findViewById(R.id.tv_name_cart_item)
@@ -70,7 +69,11 @@ class CartAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.layout_cart_item, parent, false)
+        val view = layoutInflater.inflate(
+            R.layout.layout_cart_item,
+            parent,
+            false
+        )
         return CartViewHolder(view)
     }
 

@@ -4,11 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
-    android:padding="10dp"
     tools:context=".presentation.view.activity.HistoryOrderDetailActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tool_bar"
+        android:background="@color/blue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <TextView
+        android:layout_marginTop="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -30,6 +37,7 @@
         android:layout_marginTop="20dp"
         android:textStyle="bold"
         android:textSize="18sp"
+        android:textColor="@color/red"
         android:text="Tổng tiền đơn hàng : 1000000 (vnd)"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

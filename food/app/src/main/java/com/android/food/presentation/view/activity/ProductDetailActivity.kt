@@ -1,6 +1,7 @@
 package com.android.food.presentation.view.activity
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -26,6 +27,7 @@ import com.android.food.data.api.model.Product
 import com.android.food.data.api.model.User
 import com.android.food.presentation.view.adapter.GalleryProductAdapter
 import com.android.food.presentation.viewmodel.ProductViewModel
+import com.android.food.utils.StringUtils
 import com.android.food.utils.ToastUtils
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.delay
@@ -62,13 +64,9 @@ class ProductDetailActivity : AppCompatActivity() {
         val product = intent.getSerializableExtra(AppConstant.PRODUCT_DETAIL_KEY) as? Product
         productLiveData.value = product
 
-
-
         initView()
         observerData()
     }
-
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         if (token.isNotBlank()) {
             menuInflater.inflate(R.menu.menu_product, menu)
@@ -76,7 +74,8 @@ class ProductDetailActivity : AppCompatActivity() {
             cartItemArea = rootView?.findViewById(R.id.frame_layout_cart_area)
             textBadge = rootView?.findViewById(R.id.text_cart_badge)
             cartItemArea?.setOnClickListener {
-                onCartView()
+                val intent = Intent(this , CartActivity::class.java)
+                startActivity(intent)
             }
         }
         return true
@@ -88,20 +87,14 @@ class ProductDetailActivity : AppCompatActivity() {
                 onBackHome()
                 return true
             }
-
-            R.id.item_menu_cart -> {
-
-            }
         }
         return true
     }
-
     private fun onBackHome() {
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
         finish()
     }
-
     private fun initView() {
         galleryProductAdapter = GalleryProductAdapter(context = this@ProductDetailActivity)
         galleryRecyclerView = findViewById(R.id.recycler_view_gallery)
@@ -118,22 +111,11 @@ class ProductDetailActivity : AppCompatActivity() {
     private fun customToolBar() {
         val btnBack = R.drawable.ic_back
         setSupportActionBar(toolBar)
+        toolBar?.setTitleTextColor(Color.WHITE)
         supportActionBar?.title = "Chi tiết sản phẩm"
         supportActionBar?.setHomeAsUpIndicator(btnBack)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
-
-    private fun onCartView() {
-        val token = AppSharePreference(this@ProductDetailActivity).getUser()?.token ?: ""
-        intent = if (token.isEmpty()) {
-            Intent(this, CartActivity::class.java)
-        } else {
-            Intent(this, SignInActivity::class.java)
-        }
-
-        startActivity(intent)
-    }
-
     private fun observerData() {
         productViewModel.executeGetCart()
 
@@ -156,7 +138,10 @@ class ProductDetailActivity : AppCompatActivity() {
         productLiveData.observe(this) {
             if (it != null) {
                 tvName?.text = it.name
-                tvPrice?.text = it.price.toString()
+                tvPrice?.text = String.format(
+                    "Giá: %s VND" ,
+                    StringUtils.formatCurrency(it.price.toInt())
+                )
                 tvAddress?.text = it.address
                 Glide.with(this).load(AppConstant.BASE_URL + it.image)
                     .placeholder(R.drawable.ic_logo)
@@ -189,7 +174,7 @@ class ProductDetailActivity : AppCompatActivity() {
             } else {
                 ToastUtils.showToast(this@ProductDetailActivity, "vui lòng đăng nhập")
                 runBlocking {
-                    delay(1000)
+                    delay(500)
                     val intent = Intent(this@ProductDetailActivity, SignInActivity::class.java)
                     startActivity(intent)
                 }

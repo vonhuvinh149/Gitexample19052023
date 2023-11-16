@@ -50,7 +50,6 @@ class ProductAdapter(
                     onItemClickAddCartItem?.onClick(adapterPosition)
                 }
             }
-
             btnDetail.setOnClickListener {
                 if (onItemClickAddCartItem != null) {
                     onItemClickDetailProduct?.onClick(adapterPosition)
@@ -76,7 +75,11 @@ class ProductAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.layout_product_item, parent, false)
+        val view = layoutInflater.inflate(
+            R.layout.layout_product_item,
+            parent,
+            false
+        )
         return ProductViewHolder(view)
     }
 
@@ -90,7 +93,7 @@ class ProductAdapter(
         this.onItemClickAddCartItem = onItemClickProduct
     }
 
-    fun setOnClickItemDetail(onItemClickProduct: OnItemClickProduct?){
+    fun setOnClickItemDetail(onItemClickProduct: OnItemClickProduct?) {
         this.onItemClickDetailProduct = onItemClickProduct
     }
 

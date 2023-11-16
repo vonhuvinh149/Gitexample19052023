@@ -16,6 +16,7 @@ import com.android.food.R
 import com.android.food.common.AppSharePreference
 import com.android.food.data.api.model.User
 import com.android.food.presentation.view.activity.HomeActivity
+import com.android.food.presentation.view.activity.RegisterActivity
 import com.android.food.presentation.view.activity.SignInActivity
 import com.android.food.utils.StringUtils
 import com.android.food.utils.ToastUtils
@@ -29,10 +30,9 @@ class ProfileFragment(private val context: Context) : Fragment() {
     private var tvJoinDate: TextView? = null
     private var btnLoginOrLogout: TextView? = null
     private val sharePreference = AppSharePreference(context)
-    private var myUser = User()
-
-    private var btnUpdateInfo: TextView? = null
+    private var btnRegister: TextView? = null
     private lateinit var contentInformation: LinearLayout
+    private var myUser = User()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -40,12 +40,12 @@ class ProfileFragment(private val context: Context) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
-
         myUser = sharePreference.getUser() ?: User()
 
         initView(view)
         event()
         assignData()
+
         return view
     }
 
@@ -61,8 +61,12 @@ class ProfileFragment(private val context: Context) : Fragment() {
                 startActivity(intent)
             }
         }
-    }
 
+        btnRegister?.setOnClickListener {
+            val intent = Intent(context , RegisterActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun assignData() {
@@ -74,13 +78,13 @@ class ProfileFragment(private val context: Context) : Fragment() {
             imgAvatar?.setImageResource(R.drawable.img_avatar)
             btnLoginOrLogout?.text = "Đăng Xuất"
             contentInformation.visibility = View.VISIBLE
-            btnUpdateInfo?.visibility = View.VISIBLE
+            btnRegister?.visibility = View.GONE
         } else {
             btnLoginOrLogout?.text = "Đăng Nhập"
             contentInformation.visibility = View.GONE
-            btnUpdateInfo?.visibility = View.GONE
             tvName?.visibility = View.GONE
             imgAvatar?.setImageResource(R.drawable.no_image)
+            btnRegister?.visibility = View.VISIBLE
         }
     }
 
@@ -92,7 +96,7 @@ class ProfileFragment(private val context: Context) : Fragment() {
         tvJoinDate = view.findViewById(R.id.tv_date_join)
         btnLoginOrLogout = view.findViewById(R.id.btn_logout_or_login)
         contentInformation = view.findViewById(R.id.information)
-        btnUpdateInfo = view.findViewById(R.id.btn_update_information)
+        btnRegister = view.findViewById(R.id.btn_register)
     }
 
 }
