@@ -16,6 +16,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.android.food.R
 import com.android.food.common.AppConstant
 import com.android.food.common.AppResource
@@ -23,9 +24,12 @@ import com.android.food.common.AppSharePreference
 import com.android.food.data.api.model.Cart
 import com.android.food.data.api.model.Product
 import com.android.food.data.api.model.User
+import com.android.food.presentation.view.adapter.GalleryProductAdapter
 import com.android.food.presentation.viewmodel.ProductViewModel
 import com.android.food.utils.ToastUtils
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 class ProductDetailActivity : AppCompatActivity() {
 
@@ -38,9 +42,11 @@ class ProductDetailActivity : AppCompatActivity() {
     private var tvPrice: TextView? = null
     private var tvAddress: TextView? = null
     private lateinit var imgProduct: ImageView
-    private var btnAddToCart: Button? = null
+    private var btnAddToCart: LinearLayout? = null
     private var productLiveData = MutableLiveData<Product>()
     private var token: String = ""
+    private lateinit var galleryProductAdapter: GalleryProductAdapter
+    private lateinit var galleryRecyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +61,8 @@ class ProductDetailActivity : AppCompatActivity() {
 
         val product = intent.getSerializableExtra(AppConstant.PRODUCT_DETAIL_KEY) as? Product
         productLiveData.value = product
+
+
 
         initView()
         observerData()
@@ -80,6 +88,7 @@ class ProductDetailActivity : AppCompatActivity() {
                 onBackHome()
                 return true
             }
+
             R.id.item_menu_cart -> {
 
             }
@@ -94,6 +103,8 @@ class ProductDetailActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        galleryProductAdapter = GalleryProductAdapter(context = this@ProductDetailActivity)
+        galleryRecyclerView = findViewById(R.id.recycler_view_gallery)
         toolBar = findViewById(R.id.toolbar_back)
         layoutLoading = findViewById(R.id.layout_loading)
         tvName = findViewById(R.id.tv_name_product)
@@ -152,6 +163,8 @@ class ProductDetailActivity : AppCompatActivity() {
                     .error(R.drawable.no_image)
                     .into(imgProduct)
                 event(it.id)
+                galleryProductAdapter.update(it.gallery)
+                galleryRecyclerView.adapter = galleryProductAdapter
             }
         }
     }
@@ -175,8 +188,12 @@ class ProductDetailActivity : AppCompatActivity() {
                 productViewModel.executeAddToCart(id)
             } else {
                 ToastUtils.showToast(this@ProductDetailActivity, "vui lòng đăng nhập")
-                val intent = Intent(this@ProductDetailActivity, SignInActivity::class.java)
-                startActivity(intent)
+                runBlocking {
+                    delay(1000)
+                    val intent = Intent(this@ProductDetailActivity, SignInActivity::class.java)
+                    startActivity(intent)
+                }
+
             }
         }
     }

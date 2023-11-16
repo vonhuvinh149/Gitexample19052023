@@ -84,7 +84,7 @@ class ProductFragment(private val context: Context) : Fragment() {
     }
 
     private fun observerData() {
-        Log.d("BBB", "helekadshj")
+
         productViewModel.getLoadingLiveData().observe(viewLifecycleOwner) {
             layoutLoading.isGone = !it
         }

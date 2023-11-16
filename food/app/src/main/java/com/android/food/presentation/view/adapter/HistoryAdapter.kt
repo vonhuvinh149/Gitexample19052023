@@ -24,7 +24,7 @@ class HistoryAdapter(
         if (listHistory.size > 0) {
             listHistory.clear()
         }
-        listHistory.addAll(data ?: mutableListOf())
+        listHistory.addAll(data?.reversed() ?: mutableListOf())
         notifyDataSetChanged()
     }
 

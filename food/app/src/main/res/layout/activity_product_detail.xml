@@ -64,13 +64,34 @@
             android:text="Địa chỉ: Hà lam - Thăng Bình - Quảng Nam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <Button
-            android:id="@+id/btn_add_to_cart"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            android:text="Thêm vào giỏ hàng"
+
+        <TextView
+            android:text="Ngày mở bán : "
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <LinearLayout
+            android:gravity="center"
+            android:layout_margin="15dp"
+            android:id="@+id/btn_add_to_cart"
+            android:orientation="horizontal"
+            android:background="@color/primary"
+            android:layout_width="match_parent"
+            android:padding="10dp"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@drawable/ic_cart"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+            <TextView
+                android:layout_marginStart="8dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:text="Thêm vào giỏ hàng"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
 
     </LinearLayout>
     <TextView
@@ -84,8 +105,12 @@
         android:textSize="16sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <ListView
-        android:id="@+id/list_gallery"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:id="@+id/recycler_view_gallery"
+        tools:listitem="@layout/layout_item_gallery"
         android:layout_below="@id/tv_gallery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
