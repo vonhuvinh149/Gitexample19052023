@@ -74,6 +74,7 @@ class RegisterActivity : AppCompatActivity() {
                     ToastUtils.showToast(this, "Register Success")
                     val intent = Intent(this, SignInActivity::class.java)
                     startActivity(intent)
+                    finish()
                 }
 
                 is AppResource.Error -> {
@@ -120,6 +121,8 @@ class RegisterActivity : AppCompatActivity() {
             edtAddress?.error = msgAddress
         }
     }
+
+
 
     private fun customToolBar() {
         setSupportActionBar(toolBar)

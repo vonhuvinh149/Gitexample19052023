@@ -22,7 +22,7 @@ class CartRepository(
         return apiService.addCart(map)
     }
 
-    fun requestCartConform(idCart: String): Call<AppResponseDTO<CartDTO>> {
+    fun requestCartConform(idCart: String): Call<AppResponseDTO<String>> {
         val map = HashMap<String, Any>()
         map["id_cart"] = idCart
         map["status"] = false

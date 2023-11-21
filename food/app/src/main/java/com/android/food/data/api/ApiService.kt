@@ -29,14 +29,16 @@ interface ApiService {
     @POST("cart/add")
     fun addCart(@Body map: HashMap<String, Any>): Call<AppResponseDTO<CartDTO>>
 
-    @Headers("Accept: application/json")
     @POST("cart/conform")
-    fun cartConform(@Body map: HashMap<String, Any>): Call<AppResponseDTO<CartDTO>>
+    fun cartConform(@Body map: HashMap<String, Any>): Call<AppResponseDTO<String>>
 
     @POST("order/history")
     fun requestHistoryOrder(): Call<AppResponseDTO<List<HistoryOrderDTO>>>
 
     @POST("cart/update")
     fun requestUpdateCart(@Body map: HashMap<String, Any>): Call<AppResponseDTO<CartDTO>>
+
+    @POST("user/refresh-token")
+    fun requestRefreshToken(@Body map: HashMap<String , Any > ) : Call<AppResponseDTO<UserDTO>>
 
 }

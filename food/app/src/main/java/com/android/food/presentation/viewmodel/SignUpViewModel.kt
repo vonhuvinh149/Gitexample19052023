@@ -19,12 +19,16 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class SignUpViewModel(context: Context) : ViewModel() {
+
     private val authenticationRepository = AuthenticationRepository(context)
     private val loadingLiveData = MutableLiveData<Boolean>()
     private val userLiveData = MutableLiveData<AppResource<User>>()
 
+
     fun getLoadingLiveData(): LiveData<Boolean> = loadingLiveData
     fun getUserLiveData(): LiveData<AppResource<User>> = userLiveData
+
+
 
     fun executeSignUp(
         email: String,
@@ -58,5 +62,8 @@ class SignUpViewModel(context: Context) : ViewModel() {
                 })
         }
     }
+
+
+
 
 }

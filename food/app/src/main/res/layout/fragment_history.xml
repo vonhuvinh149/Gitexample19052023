@@ -10,10 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/blue"
-        android:paddingEnd="10dp"
         android:titleTextColor="@color/black"
         app:contentInsetEnd="10dp"
         android:gravity="center"
+        android:paddingEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -43,7 +43,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="STT"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
@@ -53,8 +53,8 @@
             android:layout_gravity="center"
             android:layout_weight="4"
             android:gravity="center"
-            android:text="Date Time"
-            android:textSize="18sp"
+            android:text="Thời gian"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
@@ -64,8 +64,8 @@
             android:layout_gravity="center"
             android:layout_weight="2"
             android:gravity="center"
-            android:text="Price(vnd)"
-            android:textSize="18sp"
+            android:text="Giá(vnd)"
+            android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -81,4 +81,5 @@
         android:id="@+id/layout_loading"
         layout="@layout/layout_loading"
         android:visibility="gone" />
+
 </RelativeLayout>

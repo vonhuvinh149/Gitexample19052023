@@ -12,6 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
+
     private var instance: Retrofit? = null
 
     fun getApiService(context: Context): ApiService {
@@ -23,9 +24,9 @@ object RetrofitClient {
 
     private fun createRetrofit(context: Context): Retrofit {
         val okHttpClient = OkHttpClient.Builder()
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(35, TimeUnit.SECONDS)
+            .writeTimeout(35, TimeUnit.SECONDS)
+            .connectTimeout(35, TimeUnit.SECONDS)
             .addInterceptor(HttpLoggingInterceptor().apply {
                 setLevel(HttpLoggingInterceptor.Level.BASIC)
             })

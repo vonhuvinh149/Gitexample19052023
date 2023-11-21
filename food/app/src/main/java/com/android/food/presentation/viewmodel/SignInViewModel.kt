@@ -1,6 +1,7 @@
 package com.android.food.presentation.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,16 +20,16 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SignInViewModel(context: Context) : ViewModel() {
+class SignInViewModel(val context: Context) : ViewModel() {
     private val authenticationRepository = AuthenticationRepository(context)
 
     private val loadingLiveData = MutableLiveData<Boolean>()
     private val userLiveData = MutableLiveData<AppResource<User>>()
-    private val myUserLiveData = MutableLiveData<AppResource<User>>()
+    private val tokenRefresh = MutableLiveData<AppResource<User>>()
 
     fun getLoading(): LiveData<Boolean> = loadingLiveData
     fun getUserLiveData(): LiveData<AppResource<User>> = userLiveData
-    fun getUserMyUserLiveData(): LiveData<AppResource<User>> = myUserLiveData
+    fun getTokenRefreshLiveData(): LiveData<AppResource<User>> = tokenRefresh
 
     fun executeSignIn(email: String, password: String, context: Context) {
         loadingLiveData.value = true
@@ -60,6 +61,37 @@ class SignInViewModel(context: Context) : ViewModel() {
                         userLiveData.value = AppResource.Error(t.message.toString())
                         loadingLiveData.value = false
                     }
+                })
+        }
+    }
+
+    fun executeTokenRefresh(password: String , email : String ) {
+        loadingLiveData.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            authenticationRepository.requestRefreshToken(password, email)
+                .enqueue(object : Callback<AppResponseDTO<UserDTO>> {
+                    override fun onResponse(
+                        call: Call<AppResponseDTO<UserDTO>>,
+                        response: Response<AppResponseDTO<UserDTO>>
+                    ) {
+                        if (response.isSuccessful) {
+                            val user = UserUtils.parseUserDTO(response.body()?.data)
+                            tokenRefresh.value = AppResource.Success(user)
+                            // save token when login success
+                            AppSharePreference(context).refreshToken(user.token)
+                        } else {
+                            val errorResponse = response.errorBody()?.string() ?: "{}"
+                            val jsonError = JSONObject(errorResponse)
+                            tokenRefresh.value = AppResource.Error(jsonError.optString("message"))
+                        }
+                        loadingLiveData.value = false
+                    }
+
+                    override fun onFailure(call: Call<AppResponseDTO<UserDTO>>, t: Throwable) {
+                        tokenRefresh.value = AppResource.Error(t.message.toString())
+                        loadingLiveData.value = false
+                    }
+
                 })
         }
     }

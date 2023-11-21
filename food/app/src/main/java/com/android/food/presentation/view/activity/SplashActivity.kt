@@ -3,6 +3,7 @@ package com.android.food.presentation.view.activity
 import android.animation.Animator
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.lottie.LottieAnimationView
 import com.android.food.R
@@ -28,5 +29,12 @@ class SplashActivity : AppCompatActivity() {
                 finish()
             }
         })
+
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("BBB" , "des trôi")
     }
 }

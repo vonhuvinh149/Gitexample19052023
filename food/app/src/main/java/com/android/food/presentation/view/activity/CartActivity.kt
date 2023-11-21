@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -31,8 +30,8 @@ class CartActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private var totalPrice: TextView? = null
     private var btnOrder: TextView? = null
-    private var btnRedirectProduct : TextView? = null
-    private var tvRedirectProduct : LinearLayout? = null
+    private var btnRedirectProduct: TextView? = null
+    private var tvRedirectProduct: LinearLayout? = null
     private lateinit var cartViewModel: CartViewModel
     private lateinit var layoutLoading: LinearLayout
     private lateinit var cartID: String
@@ -57,26 +56,32 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun event() {
+
+        btnRedirectProduct?.setOnClickListener {
+            val intent = Intent(this@CartActivity , HomeActivity::class.java)
+            startActivity(intent)
+        }
+
         cartAdapter.setOnClickDownQuantity(object : CartAdapter.OnItemClickProduct {
             override fun onClick(position: Int) {
-                ToastUtils.showToast(this@CartActivity, "down")
                 val product = cartAdapter
                     .getListCartItem()
                     .getOrNull(index = position)
-                if (cartID.isNotBlank() && product != null) {
-                    val quantity: Int = product.quantity - 1
-                    cartViewModel.requestUpdateCart(cartID, product.id, quantity)
+                if (product != null ) {
+                    if(product.quantity > 1 ){
+                        val quantity: Int = product.quantity - 1
+                        cartViewModel.requestUpdateCart(cartID, product.id, quantity)
+                    }
                 }
             }
         })
 
         cartAdapter.setOnClickUpQuantity(object : CartAdapter.OnItemClickProduct {
             override fun onClick(position: Int) {
-                ToastUtils.showToast(this@CartActivity, "up")
                 val product = cartAdapter
                     .getListCartItem()
                     .getOrNull(index = position)
-                if (cartID.isNotBlank() && product != null) {
+                if ( product != null ) {
                     val quantity: Int = product.quantity + 1
                     cartViewModel.requestUpdateCart(cartID, product.id, quantity)
                 }
@@ -84,9 +89,7 @@ class CartActivity : AppCompatActivity() {
         })
 
         btnOrder?.setOnClickListener {
-            if (cartID.isNotBlank()) {
-                cartViewModel.requestCartConform(cartID)
-            }
+            cartViewModel.requestCartConform(cartID)
         }
     }
 
@@ -130,6 +133,10 @@ class CartActivity : AppCompatActivity() {
 
     private fun observerData() {
 
+        cartViewModel.getLoadingLiveData().observe(this) {
+            layoutLoading.isGone = !it
+        }
+
         cartViewModel.getUpdateCartLiveData().observe(this) {
             when (it) {
                 is AppResource.Success -> {
@@ -145,11 +152,13 @@ class CartActivity : AppCompatActivity() {
         cartViewModel.getCartOrderLivedData().observe(this) {
             when (it) {
                 is AppResource.Success -> {
+                    ToastUtils.showToast(this , it.data.toString())
                     cartAdapter.updateAdapter(emptyList())
                     totalPrice?.text = String.format(
                         "%s VND",
                         StringUtils.formatCurrency(0)
                     )
+                    tvRedirectProduct?.visibility = View.VISIBLE
                 }
 
                 is AppResource.Error -> {
@@ -161,20 +170,19 @@ class CartActivity : AppCompatActivity() {
         productViewModel.getCartLiveData().observe(this) {
             when (it) {
                 is AppResource.Success -> {
-
-                    if (it.data?.products?.size!! > 0){
+                    if (it.data?.products?.size!! > 0) {
                         tvRedirectProduct?.visibility = View.GONE
                         cartAdapter.updateAdapter(it.data.products)
-                    }else {
+                    } else {
                         tvRedirectProduct?.visibility = View.VISIBLE
                         cartAdapter.updateAdapter(it.data.products)
                         recyclerView.visibility = View.GONE
                     }
                     totalPrice?.text = String.format(
                         "%s VND",
-                        StringUtils.formatCurrency(it.data?.price?.toInt() ?: 0)
+                        StringUtils.formatCurrency(it.data.price.toInt() ?: 0)
                     )
-                    cartID = it.data?.id.toString()
+                    cartID = it.data.id
                 }
 
                 is AppResource.Error -> {

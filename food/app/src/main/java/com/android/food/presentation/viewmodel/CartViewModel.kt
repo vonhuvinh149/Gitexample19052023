@@ -22,27 +22,24 @@ import retrofit2.Response
 class CartViewModel(context: Context) : ViewModel() {
 
     private val cartRepository = CartRepository(context)
-    private val cartOrderLivedData = MutableLiveData<AppResource<Cart>>()
+    private val cartOrderLivedData = MutableLiveData<AppResource<String>>()
     private val cartUpdateLivedData = MutableLiveData<AppResource<Cart>>()
     private val loadingLiveData = MutableLiveData<Boolean>()
-
-    fun getCartOrderLivedData(): LiveData<AppResource<Cart>> = cartOrderLivedData
+    fun getCartOrderLivedData(): LiveData<AppResource<String>> = cartOrderLivedData
     fun getLoadingLiveData(): LiveData<Boolean> = loadingLiveData
     fun getUpdateCartLiveData(): LiveData<AppResource<Cart>> = cartUpdateLivedData
-
     fun requestCartConform(idCart: String) {
         loadingLiveData.value = true
         viewModelScope.launch(Dispatchers.IO) {
             cartRepository.requestCartConform(idCart)
-                .enqueue(object : Callback<AppResponseDTO<CartDTO>> {
+                .enqueue(object : Callback<AppResponseDTO<String>> {
                     override fun onResponse(
-                        call: Call<AppResponseDTO<CartDTO>>,
-                        response: Response<AppResponseDTO<CartDTO>>
+                        call: Call<AppResponseDTO<String>>,
+                        response: Response<AppResponseDTO<String>>
                     ) {
                         if (response.errorBody() != null) {
                             if (response.code() == 500) {
-                                val cart = CartUtils.parseCartDTO(response.body()?.data)
-                                cartOrderLivedData.value = AppResource.Success(cart)
+                                cartOrderLivedData.value = AppResource.Success(response.body()?.data)
                             } else {
                                 val errorResponse = response.errorBody()?.string() ?: "{}"
                                 val jsonError = JSONObject(errorResponse)
@@ -50,14 +47,13 @@ class CartViewModel(context: Context) : ViewModel() {
                                     AppResource.Error(jsonError.optString("message"))
                             }
                         } else {
-                            val cart = CartUtils.parseCartDTO(response.body()?.data)
-                            cartOrderLivedData.value = AppResource.Success(cart)
+                            cartOrderLivedData.value = AppResource.Success(response.body()?.data)
                         }
 
                         loadingLiveData.value = false
                     }
 
-                    override fun onFailure(call: Call<AppResponseDTO<CartDTO>>, t: Throwable) {
+                    override fun onFailure(call: Call<AppResponseDTO<String>>, t: Throwable) {
                         cartOrderLivedData.value = AppResource.Error(t.message ?: "")
                         loadingLiveData.value = false
                     }

@@ -21,7 +21,7 @@ class HistoryOrderDetailActivity : AppCompatActivity() {
     private lateinit var productHistoryAdapter: ProductHistoryDetailAdapter
     private var tvDateTime: TextView? = null
     private var tvTotalPrice: TextView? = null
-    private var toolbar :Toolbar? = null
+    private var toolbar: Toolbar? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,10 +32,12 @@ class HistoryOrderDetailActivity : AppCompatActivity() {
             intent.getSerializableExtra(AppConstant.HISTORY_ORDER_DETAIL_KEY) as? HistoryOrder
 
         initView()
+
         if (historyOrder != null) {
             tvDateTime?.text = StringUtils.formatDateTime(historyOrder.dateCreated)
             tvTotalPrice?.text = String.format(
-                "Tổng tiền đơn hàng: %s VND", StringUtils.formatCurrency(historyOrder.price.toInt())
+                "Tổng tiền đơn hàng: %s VND",
+                StringUtils.formatCurrency(historyOrder.price.toInt())
             )
             productHistoryAdapter.updateListProduct(historyOrder.products)
             recyclerView.adapter = productHistoryAdapter
@@ -53,19 +55,18 @@ class HistoryOrderDetailActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-
-        if (supportFragmentManager.backStackEntryCount > 0){
+        if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
-        }else {
+        } else {
             super.onBackPressed()
         }
-
         finish()
     }
 
-    private fun customToolbar(){
+    private fun customToolbar() {
         setSupportActionBar(toolbar)
         toolbar?.setTitleTextColor(Color.WHITE)
+        supportActionBar?.title = ""
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }

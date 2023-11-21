@@ -27,6 +27,5 @@ object StringUtils {
         val localDateTime = LocalDateTime.ofInstant(instant, java.time.ZoneId.systemDefault())
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return localDateTime.format(formatter)
-
     }
 }

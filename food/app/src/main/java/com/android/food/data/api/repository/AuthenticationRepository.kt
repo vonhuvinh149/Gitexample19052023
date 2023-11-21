@@ -1,6 +1,8 @@
 package com.android.food.data.api.repository
 
 import android.content.Context
+import android.util.Log
+import com.android.food.common.AppSharePreference
 import com.android.food.data.api.RetrofitClient
 import com.android.food.data.api.dto.AppResponseDTO
 import com.android.food.data.api.dto.UserDTO
@@ -33,5 +35,13 @@ class AuthenticationRepository(
         map["phone"] = phone
         map["address"] = address
         return apiService.signUp(map)
+    }
+
+    fun requestRefreshToken(password: String , email : String ): Call<AppResponseDTO<UserDTO>> {
+        val map = HashMap<String, Any>()
+        Log.d("BBB" , email )
+        map["email"] = email
+        map["password"] = password
+        return apiService.requestRefreshToken(map)
     }
 }

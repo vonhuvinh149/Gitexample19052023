@@ -21,7 +21,7 @@ import com.android.food.presentation.view.activity.SignInActivity
 import com.android.food.utils.StringUtils
 import com.android.food.utils.ToastUtils
 
-class ProfileFragment(private val context: Context) : Fragment() {
+class ProfileFragment : Fragment() {
 
     private var imgAvatar: ImageView? = null
     private var tvName: TextView? = null
@@ -29,20 +29,20 @@ class ProfileFragment(private val context: Context) : Fragment() {
     private var tvPhone: TextView? = null
     private var tvJoinDate: TextView? = null
     private var btnLoginOrLogout: TextView? = null
-    private val sharePreference = AppSharePreference(context)
+    private lateinit var sharePreference: AppSharePreference
     private var btnRegister: TextView? = null
     private lateinit var contentInformation: LinearLayout
     private var myUser = User()
+    private lateinit var view : View
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_profile, container, false)
-        myUser = sharePreference.getUser() ?: User()
+         view = inflater.inflate(R.layout.fragment_profile, container, false)
 
-        initView(view)
+        initView()
         event()
         assignData()
 
@@ -51,9 +51,9 @@ class ProfileFragment(private val context: Context) : Fragment() {
 
     private fun event() {
         btnLoginOrLogout?.setOnClickListener {
-            if (myUser.token.isNotBlank()) {
+            if (sharePreference.isTokenValid()) {
                 sharePreference.logout()
-                ToastUtils.showToast(context, "Đăng Xuất Thành Công")
+                ToastUtils.showToast(requireContext(), "Đăng Xuất Thành Công")
                 val intent = Intent(context, HomeActivity::class.java)
                 startActivity(intent)
             } else {
@@ -63,14 +63,22 @@ class ProfileFragment(private val context: Context) : Fragment() {
         }
 
         btnRegister?.setOnClickListener {
-            val intent = Intent(context , RegisterActivity::class.java)
+            val intent = Intent(context, RegisterActivity::class.java)
             startActivity(intent)
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        sharePreference = AppSharePreference(context)
+        myUser = sharePreference.getUser() ?: User()
+
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun assignData() {
-        if (myUser.registerDate.isNotBlank()) {
+        if (sharePreference.isTokenValid()) {
             tvName?.text = myUser.name
             tvEmail?.text = myUser.email
             tvPhone?.text = myUser.phone
@@ -88,7 +96,7 @@ class ProfileFragment(private val context: Context) : Fragment() {
         }
     }
 
-    private fun initView(view: View) {
+    private fun initView() {
         imgAvatar = view.findViewById(R.id.img_info_avatar)
         tvName = view.findViewById(R.id.tv_user_name)
         tvEmail = view.findViewById(R.id.tv_email_profile)

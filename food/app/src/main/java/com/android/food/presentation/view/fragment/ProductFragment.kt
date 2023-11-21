@@ -6,10 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -31,14 +27,17 @@ import com.android.food.common.AppConstant
 import com.android.food.common.AppResource
 import com.android.food.common.AppSharePreference
 import com.android.food.data.api.model.Cart
-import com.android.food.presentation.view.adapter.ProductAdapter
 import com.android.food.presentation.view.activity.CartActivity
 import com.android.food.presentation.view.activity.ProductDetailActivity
 import com.android.food.presentation.view.activity.SignInActivity
+import com.android.food.presentation.view.activity.SignInRefreshActivity
+import com.android.food.presentation.view.adapter.ProductAdapter
 import com.android.food.presentation.viewmodel.ProductViewModel
 import com.android.food.utils.ToastUtils
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
-class ProductFragment(private val context: Context) : Fragment() {
+class ProductFragment : Fragment() {
 
     private lateinit var productViewModel: ProductViewModel
     private lateinit var productAdapter: ProductAdapter
@@ -47,13 +46,27 @@ class ProductFragment(private val context: Context) : Fragment() {
     private var cartItemArea: FrameLayout? = null
     private var textBadge: TextView? = null
     private var toolBar: Toolbar? = null
-    val token = AppSharePreference(context).getUser()?.token ?: ""
+    private lateinit var sharePreference :  AppSharePreference
+    private lateinit var view : View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_product, container, false)
+         view = inflater.inflate(R.layout.fragment_product, container, false)
+
+
+
+        initView()
+        observerData()
+        event()
+
+        return view
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        sharePreference = AppSharePreference(context)
 
         productViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -61,23 +74,29 @@ class ProductFragment(private val context: Context) : Fragment() {
             }
         }
         )[ProductViewModel::class.java]
-
-        initView(view)
-        observerData()
-        event()
-
-        return view
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (token.isNotBlank()) {
+        if (sharePreference.isTokenValid()) {
             inflater.inflate(R.menu.menu_product, menu)
             val rootView = menu.findItem(R.id.item_menu_cart)?.actionView
             cartItemArea = rootView?.findViewById(R.id.frame_layout_cart_area)
             textBadge = rootView?.findViewById(R.id.text_cart_badge)
             cartItemArea?.setOnClickListener {
-                val intent = Intent(context, CartActivity::class.java)
-                startActivity(intent)
+                if (sharePreference.isTokenExpirationTime()) {
+                    val intent = Intent(context, CartActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    runBlocking {
+                        ToastUtils.showToast(
+                            requireActivity(),
+                            "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại."
+                        )
+                        delay(1000)
+                        val intent = Intent(context, SignInRefreshActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
             }
         }
         super.onCreateOptionsMenu(menu, inflater)
@@ -96,7 +115,7 @@ class ProductFragment(private val context: Context) : Fragment() {
                 }
 
                 is AppResource.Error -> {
-                    ToastUtils.showToast(context, it.message ?: "")
+                    ToastUtils.showToast(requireActivity(), it.message ?: "")
                 }
             }
         }
@@ -110,7 +129,7 @@ class ProductFragment(private val context: Context) : Fragment() {
                 }
 
                 is AppResource.Error -> {
-                    ToastUtils.showToast(context, it.message ?: "")
+                    ToastUtils.showToast(requireActivity(), it.message ?: "")
                 }
 
                 else -> {}
@@ -124,15 +143,27 @@ class ProductFragment(private val context: Context) : Fragment() {
 
         productAdapter.setOnAddItemClickFood(object : ProductAdapter.OnItemClickProduct {
             override fun onClick(position: Int) {
-                if (token.isNotBlank()) {
-                    val idProduct = productAdapter
-                        .getListProducts()
-                        .getOrNull(index = position)?.id ?: ""
-                    if (idProduct.isNotEmpty()) {
-                        productViewModel.executeAddToCart(idProduct)
+                if (sharePreference.isTokenValid()) {
+                    if (sharePreference.isTokenExpirationTime()) {
+                        val idProduct = productAdapter
+                            .getListProducts()
+                            .getOrNull(index = position)?.id ?: ""
+                        if (idProduct.isNotEmpty()) {
+                            productViewModel.executeAddToCart(idProduct)
+                        }
+                    } else {
+                        ToastUtils.showToast(
+                            requireActivity(),
+                            "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại."
+                        )
+                        runBlocking {
+                            delay(1000)
+                            val intent = Intent(context, SignInRefreshActivity::class.java)
+                            startActivity(intent)
+                        }
                     }
                 } else {
-                    ToastUtils.showToast(context, "Vui lòng đăng nhập")
+                    ToastUtils.showToast(requireActivity(), "Vui lòng đăng nhập")
                     val intent = Intent(context, SignInActivity::class.java)
                     startActivity(intent)
                 }
@@ -150,6 +181,7 @@ class ProductFragment(private val context: Context) : Fragment() {
             }
         })
     }
+
     private fun customToolbar() {
         val initActivity = activity as? AppCompatActivity
         initActivity?.setSupportActionBar(toolBar)
@@ -158,7 +190,7 @@ class ProductFragment(private val context: Context) : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    private fun initView(view: View) {
+    private fun initView() {
         layoutLoading = view.findViewById(R.id.layout_loading_fr)
         productRecyclerView = view.findViewById(R.id.recycler_view_product_fr)
         toolBar = view.findViewById(R.id.toolbar_home_fr)

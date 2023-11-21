@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -28,14 +26,15 @@ import com.android.food.common.AppConstant
 import com.android.food.common.AppResource
 import com.android.food.common.AppSharePreference
 import com.android.food.data.api.model.Cart
-import com.android.food.presentation.view.adapter.HistoryAdapter
 import com.android.food.presentation.view.activity.CartActivity
 import com.android.food.presentation.view.activity.HistoryOrderDetailActivity
+import com.android.food.presentation.view.adapter.HistoryAdapter
 import com.android.food.presentation.viewmodel.HistoryVIewModel
 import com.android.food.presentation.viewmodel.ProductViewModel
+import java.security.Key
 
 
-class HistoryFragment(private val context: Context) : Fragment() {
+class HistoryFragment : Fragment() {
 
     private lateinit var historyVIewModel: HistoryVIewModel
     private lateinit var productViewModel: ProductViewModel
@@ -45,13 +44,27 @@ class HistoryFragment(private val context: Context) : Fragment() {
     private var cartItemArea: FrameLayout? = null
     private var textBadge: TextView? = null
     private var toolBar: Toolbar? = null
+    private lateinit var sharePreference: AppSharePreference
+    private lateinit var view: View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        val view = inflater.inflate(R.layout.fragment_history, container, false)
+        view = inflater.inflate(R.layout.fragment_history, container, false)
+
+
+
+        initView()
+        observerData()
+        event()
+        return view
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        sharePreference = AppSharePreference(context)
 
         historyVIewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -64,16 +77,11 @@ class HistoryFragment(private val context: Context) : Fragment() {
                 return ProductViewModel(context) as T
             }
         })[ProductViewModel::class.java]
-
-        initView(view)
-        observerData()
-        event()
-        return view
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        val token = AppSharePreference(context).getUser()?.token ?: ""
-        if (token.isNotBlank()) {
+
+        if (sharePreference.isTokenValid()) {
             inflater.inflate(R.menu.menu_product, menu)
             val rootView = menu.findItem(R.id.item_menu_cart)?.actionView
             cartItemArea = rootView?.findViewById(R.id.frame_layout_cart_area)
@@ -86,7 +94,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun initView(view: View) {
+    private fun initView() {
         recyclerViewHistory = view.findViewById(R.id.recycler_view_history)
         layoutLoading = view.findViewById(R.id.layout_loading)
         historyAdapter = HistoryAdapter(context = context)
@@ -97,13 +105,14 @@ class HistoryFragment(private val context: Context) : Fragment() {
     }
 
     private fun event() {
+
         historyAdapter.setOnClickItemHistory(object : HistoryAdapter.OnClickItemHistory {
             override fun onClick(position: Int) {
                 val historyItem = historyAdapter
                     .getListProducts()
                     .getOrNull(index = position)
-                val intent = Intent(context , HistoryOrderDetailActivity::class.java)
-                intent.putExtra(AppConstant.HISTORY_ORDER_DETAIL_KEY , historyItem )
+                val intent = Intent(context, HistoryOrderDetailActivity::class.java)
+                intent.putExtra(AppConstant.HISTORY_ORDER_DETAIL_KEY, historyItem)
                 startActivity(intent)
             }
         })
@@ -140,6 +149,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
         productViewModel.executeGetCart()
         historyVIewModel.requestHistoryOrder()
     }
+
     private fun updateBadge(cart: Cart) {
         val totalProduct = cart.products.size
         if (totalProduct == 0) {
@@ -152,6 +162,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
                 .toString()
         }
     }
+
     private fun customToolbar() {
         val initActivity = activity as? AppCompatActivity
         initActivity?.setSupportActionBar(toolBar)
