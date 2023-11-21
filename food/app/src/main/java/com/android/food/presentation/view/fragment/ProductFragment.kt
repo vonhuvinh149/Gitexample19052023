@@ -73,6 +73,7 @@ class ProductFragment : Fragment() {
                 return ProductViewModel(context) as T
             }
         }
+
         )[ProductViewModel::class.java]
     }
 

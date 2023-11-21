@@ -84,7 +84,6 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-
         if (doubleBackToExitPressedOnce) {
             onBackDialog()
         }
@@ -114,7 +113,6 @@ class HomeActivity : AppCompatActivity() {
         }
 
         btnAgree.setOnClickListener {
-            super.onBackPressed()
             finish()
         }
 

@@ -2,7 +2,6 @@ package com.android.food.common
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import com.android.food.data.api.model.User
@@ -35,7 +34,7 @@ class AppSharePreference(
 
     fun saveUser(user: User) {
         val jsonString = user.toJson()
-        val currentTime = System.currentTimeMillis() + (60 * 1000)
+        val currentTime = System.currentTimeMillis() + (3 * 60 * 1000)
         sharedPreferences.edit {
             editor.putString(AppConstant.TOKEN_KEY, jsonString)
             editor.putLong(AppConstant.EXPIRATION_TIME_KEY, currentTime)
@@ -63,10 +62,10 @@ class AppSharePreference(
         return jsonString?.toUser()
     }
 
-    fun refreshToken(token : String ){
-        val user : User = getUser() ?: User()
+    fun refreshToken(token: String) {
+        val user: User = getUser() ?: User()
         val updateUser = user.copy(token = token)
-        val currentTime = System.currentTimeMillis() + (60 * 1000)
+        val currentTime = System.currentTimeMillis() + (3 * 60 * 1000)
         sharedPreferences.edit {
             editor.putString(AppConstant.TOKEN_KEY, updateUser.toJson())
             editor.putLong(AppConstant.EXPIRATION_TIME_KEY, currentTime)

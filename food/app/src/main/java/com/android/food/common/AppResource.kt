@@ -1,6 +1,5 @@
 package com.android.food.common
 
-
 sealed class AppResource<T>(
     val data: T? = null,
     val message: String? = null

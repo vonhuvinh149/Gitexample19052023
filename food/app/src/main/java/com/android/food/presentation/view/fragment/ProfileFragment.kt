@@ -18,8 +18,10 @@ import com.android.food.data.api.model.User
 import com.android.food.presentation.view.activity.HomeActivity
 import com.android.food.presentation.view.activity.RegisterActivity
 import com.android.food.presentation.view.activity.SignInActivity
+import com.android.food.presentation.view.activity.SignInRefreshActivity
 import com.android.food.utils.StringUtils
 import com.android.food.utils.ToastUtils
+import kotlinx.coroutines.runBlocking
 
 class ProfileFragment : Fragment() {
 
@@ -33,14 +35,14 @@ class ProfileFragment : Fragment() {
     private var btnRegister: TextView? = null
     private lateinit var contentInformation: LinearLayout
     private var myUser = User()
-    private lateinit var view : View
+    private lateinit var view: View
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-         view = inflater.inflate(R.layout.fragment_profile, container, false)
+        view = inflater.inflate(R.layout.fragment_profile, container, false)
 
         initView()
         event()
@@ -72,8 +74,16 @@ class ProfileFragment : Fragment() {
         super.onAttach(context)
 
         sharePreference = AppSharePreference(context)
-        myUser = sharePreference.getUser() ?: User()
 
+        if (sharePreference.isTokenValid()){
+            if (sharePreference.isTokenExpirationTime()){
+                myUser = sharePreference.getUser() ?: User()
+            }else{
+                ToastUtils.showToast(context , "Phiên làm việc đã hết hạng vui lòng đăng nhập lại !")
+                val intent = Intent(context , SignInRefreshActivity::class.java)
+                startActivity(intent)
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
