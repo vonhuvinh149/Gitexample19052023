@@ -24,12 +24,10 @@ class SignUpViewModel(context: Context) : ViewModel() {
     private val loadingLiveData = MutableLiveData<Boolean>()
     private val userLiveData = MutableLiveData<AppResource<User>>()
 
-
     fun getLoadingLiveData(): LiveData<Boolean> = loadingLiveData
     fun getUserLiveData(): LiveData<AppResource<User>> = userLiveData
 
-
-
+    // Sign up
     fun executeSignUp(
         email: String,
         name: String,
@@ -62,8 +60,4 @@ class SignUpViewModel(context: Context) : ViewModel() {
                 })
         }
     }
-
-
-
-
 }

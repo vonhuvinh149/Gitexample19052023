@@ -28,6 +28,8 @@ class CartViewModel(context: Context) : ViewModel() {
     fun getCartOrderLivedData(): LiveData<AppResource<String>> = cartOrderLivedData
     fun getLoadingLiveData(): LiveData<Boolean> = loadingLiveData
     fun getUpdateCartLiveData(): LiveData<AppResource<Cart>> = cartUpdateLivedData
+
+    // Cart Conform
     fun requestCartConform(idCart: String) {
         loadingLiveData.value = true
         viewModelScope.launch(Dispatchers.IO) {
@@ -39,7 +41,8 @@ class CartViewModel(context: Context) : ViewModel() {
                     ) {
                         if (response.errorBody() != null) {
                             if (response.code() == 500) {
-                                cartOrderLivedData.value = AppResource.Success(response.body()?.data)
+                                cartOrderLivedData.value =
+                                    AppResource.Success(response.body()?.data)
                             } else {
                                 val errorResponse = response.errorBody()?.string() ?: "{}"
                                 val jsonError = JSONObject(errorResponse)
@@ -61,6 +64,7 @@ class CartViewModel(context: Context) : ViewModel() {
         }
     }
 
+    // update cart
     fun requestUpdateCart(idCart: String, idProduct: String, quantity: Int) {
         loadingLiveData.value = true
         viewModelScope.launch(Dispatchers.IO) {
@@ -90,7 +94,6 @@ class CartViewModel(context: Context) : ViewModel() {
                     override fun onFailure(call: Call<AppResponseDTO<CartDTO>>, t: Throwable) {
                         loadingLiveData.value = false
                     }
-
                 })
         }
     }

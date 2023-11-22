@@ -46,16 +46,15 @@ class ProductFragment : Fragment() {
     private var cartItemArea: FrameLayout? = null
     private var textBadge: TextView? = null
     private var toolBar: Toolbar? = null
-    private lateinit var sharePreference :  AppSharePreference
-    private lateinit var view : View
+    private lateinit var sharePreference: AppSharePreference
+    private lateinit var view: View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-         view = inflater.inflate(R.layout.fragment_product, container, false)
 
-
+        view = inflater.inflate(R.layout.fragment_product, container, false)
 
         initView()
         observerData()

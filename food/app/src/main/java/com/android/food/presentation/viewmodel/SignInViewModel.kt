@@ -1,7 +1,6 @@
 package com.android.food.presentation.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,6 +30,7 @@ class SignInViewModel(val context: Context) : ViewModel() {
     fun getUserLiveData(): LiveData<AppResource<User>> = userLiveData
     fun getTokenRefreshLiveData(): LiveData<AppResource<User>> = tokenRefresh
 
+    // login account
     fun executeSignIn(email: String, password: String, context: Context) {
         loadingLiveData.value = true
         viewModelScope.launch(Dispatchers.IO) {
@@ -65,7 +65,8 @@ class SignInViewModel(val context: Context) : ViewModel() {
         }
     }
 
-    fun executeTokenRefresh(password: String , email : String ) {
+    // update refresh
+    fun executeTokenRefresh(password: String, email: String) {
         loadingLiveData.value = true
         viewModelScope.launch(Dispatchers.IO) {
             authenticationRepository.requestRefreshToken(password, email)

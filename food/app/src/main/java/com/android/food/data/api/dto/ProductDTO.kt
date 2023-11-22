@@ -15,7 +15,7 @@ data class ProductDTO(
     @SerializedName("date_created")
     val dateCreated: String,
     @SerializedName("date_updated")
-    val dateUpdated:  List<String>?,
+    val dateUpdated: List<String>?,
     @SerializedName("__v")
     val v: Long,
 )

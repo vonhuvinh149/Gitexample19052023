@@ -1,10 +1,11 @@
 package com.android.food.utils.validation
 
 class Validator {
+
     private val emailPattern = Regex("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}\$")
-    private val namePattern = Regex("^[A-Za-z\\s-]+\$")
-    private val passwordPattern = Regex("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")
-    private val phonePattern = Regex("^(0[0-9]{9}|84[0-9]{8})\$")
+    private val namePattern = Regex("^[a-zA-Z ]+\$")
+    private val passwordPattern = Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")
+    private val phonePattern = Regex("^(0[1-9]{9}|(\\+84)[1-9]{9})\$")
 
     fun isValidateEmail(email: String): String {
         if (email.isBlank()) {
@@ -31,9 +32,9 @@ class Validator {
         } else if (password.length < 8) {
             return "Password must be at least 8 characters long."
         }
-//        else if (!passwordPattern.matches(password)) {
-//            return "Invalid password format"
-//        }
+        else if (!passwordPattern.matches(password)) {
+            return "Invalid password format"
+        }
         return ""
     }
 
@@ -51,8 +52,7 @@ class Validator {
     fun isValidateAddress(address: String): String {
         if (address.isBlank()) {
             return "Please provide your address."
-        }
-        if (address.length < 10) {
+        } else if (address.length < 10) {
             return "Please enter in address full."
         }
         return "";

@@ -5,11 +5,9 @@ import com.android.food.data.api.dto.CartDTO
 import com.android.food.data.api.dto.HistoryOrderDTO
 import com.android.food.data.api.dto.ProductDTO
 import com.android.food.data.api.dto.UserDTO
-import com.android.food.data.api.model.Cart
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface ApiService {
@@ -39,6 +37,6 @@ interface ApiService {
     fun requestUpdateCart(@Body map: HashMap<String, Any>): Call<AppResponseDTO<CartDTO>>
 
     @POST("user/refresh-token")
-    fun requestRefreshToken(@Body map: HashMap<String , Any > ) : Call<AppResponseDTO<UserDTO>>
+    fun requestRefreshToken(@Body map: HashMap<String, Any>): Call<AppResponseDTO<UserDTO>>
 
 }

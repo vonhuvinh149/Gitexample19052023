@@ -162,7 +162,7 @@ class CartActivity : AppCompatActivity() {
                 }
 
                 is AppResource.Error -> {
-                    Log.d("BBB", it.message ?: "")
+                    ToastUtils.showToast(this , it.message ?: "")
                 }
             }
         }

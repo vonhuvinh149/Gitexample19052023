@@ -82,7 +82,6 @@ class SignInRefreshActivity : AppCompatActivity() {
             when (it) {
                 is AppResource.Success -> {
                     Toast.makeText(this, "Login success !", Toast.LENGTH_SHORT).show()
-                    Log.d("BBB", it.data?.token ?: "")
                     val intent = Intent(this@SignInRefreshActivity, HomeActivity::class.java)
                     startActivity(intent)
                     finish()

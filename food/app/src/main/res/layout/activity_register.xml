@@ -7,15 +7,15 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool_bar"
-        android:titleTextColor="@color/white"
-        android:background="@color/blue"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:background="@color/blue"
+        android:titleTextColor="@color/white" />
 
     <LinearLayout
-        android:layout_below="@+id/tool_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tool_bar"
         android:orientation="vertical"
         android:padding="15dp">
 
@@ -26,6 +26,7 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="SIGN UP"
+            android:textStyle="bold"
             android:textColor="@color/white"
             android:textSize="32sp" />
 
@@ -33,7 +34,7 @@
             android:id="@+id/edit_email_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="30dp"
             android:hint="email"
             android:textColorHint="@color/white"
             app:boxStrokeColor="@color/white"
@@ -73,9 +74,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="passowrd"
-            app:errorEnabled="true"
             android:textColorHint="@color/white"
             app:boxStrokeColor="@color/white"
+            app:errorEnabled="true"
             app:hintTextColor="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -126,26 +127,18 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
-<!--        <Button-->
-<!--            android:id="@+id/btn_save_signup"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:background="@color/white"-->
-<!--            android:text="Sign Up"-->
-<!--            android:textSize="22sp" />-->
-
         <TextView
-            android:textSize="22sp"
-            android:textColor="@color/white"
-            android:padding="10dp"
-            android:gravity="center"
-            android:background="@color/primary"
+            android:layout_marginTop="10dp"
             android:id="@+id/btn_save_signup"
-            android:text="Sign Up"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Đăng Ký"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <include

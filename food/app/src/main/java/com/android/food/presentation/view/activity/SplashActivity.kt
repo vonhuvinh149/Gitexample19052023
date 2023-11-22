@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.lottie.LottieAnimationView
 import com.android.food.R
-import com.android.food.presentation.view.ProductActivity
 
 class SplashActivity : AppCompatActivity() {
 

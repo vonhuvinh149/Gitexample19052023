@@ -54,11 +54,10 @@ class HistoryFragment : Fragment() {
 
         view = inflater.inflate(R.layout.fragment_history, container, false)
 
-
-
         initView()
         observerData()
         event()
+
         return view
     }
 

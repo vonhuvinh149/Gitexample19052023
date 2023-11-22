@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -24,7 +23,6 @@ import com.android.food.common.AppResource
 import com.android.food.common.AppSharePreference
 import com.android.food.data.api.model.Cart
 import com.android.food.data.api.model.Product
-import com.android.food.data.api.model.User
 import com.android.food.presentation.view.adapter.GalleryProductAdapter
 import com.android.food.presentation.viewmodel.ProductViewModel
 import com.android.food.utils.StringUtils
@@ -67,6 +65,7 @@ class ProductDetailActivity : AppCompatActivity() {
         initView()
         observerData()
     }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         if (token.isNotBlank()) {
             menuInflater.inflate(R.menu.menu_product, menu)
@@ -74,7 +73,7 @@ class ProductDetailActivity : AppCompatActivity() {
             cartItemArea = rootView?.findViewById(R.id.frame_layout_cart_area)
             textBadge = rootView?.findViewById(R.id.text_cart_badge)
             cartItemArea?.setOnClickListener {
-                val intent = Intent(this , CartActivity::class.java)
+                val intent = Intent(this, CartActivity::class.java)
                 startActivity(intent)
             }
         }
@@ -90,11 +89,13 @@ class ProductDetailActivity : AppCompatActivity() {
         }
         return true
     }
+
     private fun onBackHome() {
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
         finish()
     }
+
     private fun initView() {
         galleryProductAdapter = GalleryProductAdapter(context = this@ProductDetailActivity)
         galleryRecyclerView = findViewById(R.id.recycler_view_gallery)
@@ -116,6 +117,7 @@ class ProductDetailActivity : AppCompatActivity() {
         supportActionBar?.setHomeAsUpIndicator(btnBack)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
+
     private fun observerData() {
         productViewModel.executeGetCart()
 
@@ -139,7 +141,7 @@ class ProductDetailActivity : AppCompatActivity() {
             if (it != null) {
                 tvName?.text = it.name
                 tvPrice?.text = String.format(
-                    "Giá: %s VND" ,
+                    "Giá: %s VND",
                     StringUtils.formatCurrency(it.price.toInt())
                 )
                 tvAddress?.text = it.address

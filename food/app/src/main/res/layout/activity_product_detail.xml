@@ -30,8 +30,8 @@
         <ImageView
             android:id="@+id/img_detail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/background_shape"
+            android:layout_height="180dp"
+            android:background="@color/silver"
             android:scaleType="centerCrop" />
     </LinearLayout>
 
@@ -48,7 +48,7 @@
             android:id="@+id/tv_name_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=" ZZZZZZZZZZ ZZZZZZZZZZ ZZZ ZZZ ZZZZ ZZ ZZZZZ ZZZZZZ ZZZZZZZ ZZZZZZZZZZ"
+            android:text=""
             android:textSize="22sp" />
 
         <TextView
@@ -88,6 +88,7 @@
             android:src="@drawable/ic_cart" />
 
         <TextView
+            android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

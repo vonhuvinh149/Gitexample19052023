@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-
 import com.android.food.common.AppResource
 import com.android.food.data.api.dto.AppResponseDTO
 import com.android.food.data.api.dto.CartDTO
@@ -36,6 +35,7 @@ class ProductViewModel(context: Context) : ViewModel() {
     fun getProductLiveData(): LiveData<AppResource<List<Product>>> = listProductLiveData
     fun getCartLiveData(): LiveData<AppResource<Cart>> = cartLiveData
 
+    // Get Product
     fun getRequestProduct() {
         loadingLiveData.value = true
         viewModelScope.launch(Dispatchers.IO) {
@@ -71,6 +71,7 @@ class ProductViewModel(context: Context) : ViewModel() {
         }
     }
 
+    // Get Cart
     fun executeGetCart() {
         loadingLiveData.value = true
         viewModelScope.launch(Dispatchers.IO) {
@@ -108,6 +109,7 @@ class ProductViewModel(context: Context) : ViewModel() {
         }
     }
 
+    // Add to cart
     fun executeAddToCart(idProduct: String) {
         loadingLiveData.value = true
         viewModelScope.launch(Dispatchers.IO) {

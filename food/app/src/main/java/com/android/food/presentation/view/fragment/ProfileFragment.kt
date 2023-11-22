@@ -21,7 +21,6 @@ import com.android.food.presentation.view.activity.SignInActivity
 import com.android.food.presentation.view.activity.SignInRefreshActivity
 import com.android.food.utils.StringUtils
 import com.android.food.utils.ToastUtils
-import kotlinx.coroutines.runBlocking
 
 class ProfileFragment : Fragment() {
 
@@ -42,11 +41,12 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         view = inflater.inflate(R.layout.fragment_profile, container, false)
 
         initView()
+        bindingData()
         event()
-        assignData()
 
         return view
     }
@@ -87,7 +87,7 @@ class ProfileFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun assignData() {
+    private fun bindingData() {
         if (sharePreference.isTokenValid()) {
             tvName?.text = myUser.name
             tvEmail?.text = myUser.email

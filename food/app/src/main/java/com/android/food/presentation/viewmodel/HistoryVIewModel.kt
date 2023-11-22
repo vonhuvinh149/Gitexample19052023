@@ -28,6 +28,8 @@ class HistoryVIewModel(context: Context) : ViewModel() {
     fun getHistoryOrderLiveData(): LiveData<AppResource<List<HistoryOrder>>> = historyOrderLiveData
     fun getLoadingLiveData(): LiveData<Boolean> = loadingLiveData
 
+
+    // History order
     fun requestHistoryOrder() {
         loadingLiveData.value = true
         viewModelScope.launch(Dispatchers.IO) {
@@ -55,7 +57,7 @@ class HistoryVIewModel(context: Context) : ViewModel() {
                         call: Call<AppResponseDTO<List<HistoryOrderDTO>>>,
                         t: Throwable
                     ) {
-//                        historyOrderLiveData.value = AppResource.Error(t.message.toString())
+                        historyOrderLiveData.value = AppResource.Error(t.message.toString())
                         loadingLiveData.value = false
                     }
 
