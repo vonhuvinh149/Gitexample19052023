@@ -36,11 +36,11 @@ class ProductViewModel(context: Context) : ViewModel() {
     fun getCartLiveData(): LiveData<AppResource<Cart>> = cartLiveData
 
     // Get Product
-    fun getRequestProduct() {
+    fun executeGetProduct() {
         loadingLiveData.value = true
         viewModelScope.launch(Dispatchers.IO) {
             productRepository
-                .getListProduct()
+                .requestGetListProduct()
                 .enqueue(object : Callback<AppResponseDTO<List<ProductDTO>>> {
                     override fun onResponse(
                         call: Call<AppResponseDTO<List<ProductDTO>>>,
@@ -76,7 +76,7 @@ class ProductViewModel(context: Context) : ViewModel() {
         loadingLiveData.value = true
         viewModelScope.launch(Dispatchers.IO) {
             cartRepository
-                .getCart()
+                .requestGetCart()
                 .enqueue(object : Callback<AppResponseDTO<CartDTO>> {
                     override fun onResponse(
                         call: Call<AppResponseDTO<CartDTO>>,

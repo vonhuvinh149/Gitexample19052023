@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.KeyEvent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -31,7 +31,6 @@ import com.android.food.presentation.view.activity.HistoryOrderDetailActivity
 import com.android.food.presentation.view.adapter.HistoryAdapter
 import com.android.food.presentation.viewmodel.HistoryVIewModel
 import com.android.food.presentation.viewmodel.ProductViewModel
-import java.security.Key
 
 
 class HistoryFragment : Fragment() {
@@ -104,7 +103,6 @@ class HistoryFragment : Fragment() {
     }
 
     private fun event() {
-
         historyAdapter.setOnClickItemHistory(object : HistoryAdapter.OnClickItemHistory {
             override fun onClick(position: Int) {
                 val historyItem = historyAdapter

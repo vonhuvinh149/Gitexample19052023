@@ -12,7 +12,7 @@ class ProductRepository(
 
     private val apiService = RetrofitClient.getApiService(context)
 
-    fun getListProduct(): Call<AppResponseDTO<List<ProductDTO>>> {
+    fun requestGetListProduct(): Call<AppResponseDTO<List<ProductDTO>>> {
         return apiService.getListProduct()
     }
 

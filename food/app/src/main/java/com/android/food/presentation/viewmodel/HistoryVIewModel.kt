@@ -28,12 +28,11 @@ class HistoryVIewModel(context: Context) : ViewModel() {
     fun getHistoryOrderLiveData(): LiveData<AppResource<List<HistoryOrder>>> = historyOrderLiveData
     fun getLoadingLiveData(): LiveData<Boolean> = loadingLiveData
 
-
     // History order
     fun requestHistoryOrder() {
         loadingLiveData.value = true
         viewModelScope.launch(Dispatchers.IO) {
-            historyRepository.requestHistory()
+            historyRepository.requestGetHistory()
                 .enqueue(object : Callback<AppResponseDTO<List<HistoryOrderDTO>>> {
                     override fun onResponse(
                         call: Call<AppResponseDTO<List<HistoryOrderDTO>>>,

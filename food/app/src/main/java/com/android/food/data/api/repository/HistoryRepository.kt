@@ -9,7 +9,7 @@ import retrofit2.Call
 class HistoryRepository(val context: Context) {
     private val apiService = RetrofitClient.getApiService(context)
 
-    fun requestHistory(): Call<AppResponseDTO<List<HistoryOrderDTO>>> {
+    fun requestGetHistory(): Call<AppResponseDTO<List<HistoryOrderDTO>>> {
         return apiService.requestHistoryOrder()
     }
 }

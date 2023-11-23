@@ -12,7 +12,7 @@ class CartRepository(
 ) {
     private val apiService = RetrofitClient.getApiService(context)
 
-    fun getCart(): Call<AppResponseDTO<CartDTO>> {
+    fun requestGetCart(): Call<AppResponseDTO<CartDTO>> {
         return apiService.getCart()
     }
 

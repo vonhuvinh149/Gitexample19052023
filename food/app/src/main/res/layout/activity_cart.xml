@@ -79,7 +79,7 @@
                 android:paddingTop="8dp"
                 android:paddingEnd="15dp"
                 android:paddingBottom="8dp"
-                android:text="Xem thêm sản phẩm"
+                android:text="Xem sản phẩm"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />

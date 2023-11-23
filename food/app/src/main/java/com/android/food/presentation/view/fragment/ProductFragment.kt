@@ -120,7 +120,7 @@ class ProductFragment : Fragment() {
             }
         }
 
-        productViewModel.getRequestProduct()
+        productViewModel.executeGetProduct()
 
         productViewModel.getCartLiveData().observe(viewLifecycleOwner) {
             when (it) {

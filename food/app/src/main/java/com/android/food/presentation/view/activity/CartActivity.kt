@@ -39,6 +39,7 @@ class CartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
+
         productViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return ProductViewModel(this@CartActivity) as T
@@ -50,6 +51,7 @@ class CartActivity : AppCompatActivity() {
                 return CartViewModel(this@CartActivity) as T
             }
         })[CartViewModel::class.java]
+
         initView()
         observerData()
         event()

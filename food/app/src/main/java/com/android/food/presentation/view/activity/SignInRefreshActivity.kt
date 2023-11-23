@@ -2,7 +2,6 @@ package com.android.food.presentation.view.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -39,7 +38,6 @@ class SignInRefreshActivity : AppCompatActivity() {
             })[SignInViewModel::class.java]
 
         initView()
-
         observerData()
         event()
 
@@ -53,11 +51,11 @@ class SignInRefreshActivity : AppCompatActivity() {
 
         btnLogin?.setOnClickListener {
             val password: String = edtPassword?.text.toString()
-            val email : String = sharePreference.getUser()?.email ?: ""
+            val email: String = sharePreference.getUser()?.email ?: ""
             if (password.isEmpty()) {
                 return@setOnClickListener
             }
-            signInViewModel.executeTokenRefresh(password , email)
+            signInViewModel.executeTokenRefresh(password, email)
         }
     }
 
@@ -67,9 +65,7 @@ class SignInRefreshActivity : AppCompatActivity() {
         edtPassword = findViewById(R.id.text_edit_password)
         layoutLoading = findViewById(R.id.layout_loading)
         tvName = findViewById(R.id.tv_name_user)
-
         tvName?.text = sharePreference.getUser()?.name
-
     }
 
     private fun observerData() {
