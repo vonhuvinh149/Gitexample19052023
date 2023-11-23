@@ -143,6 +143,7 @@ class CartActivity : AppCompatActivity() {
             when (it) {
                 is AppResource.Success -> {
                     cartAdapter.updateAdapter(it.data?.products)
+                    productViewModel.executeGetCart()
                 }
 
                 is AppResource.Error -> {
