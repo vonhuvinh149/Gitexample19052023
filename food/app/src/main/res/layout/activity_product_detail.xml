@@ -66,6 +66,7 @@
             android:text="Địa chỉ: Hà lam - Thăng Bình - Quảng Nam" />
 
         <TextView
+            android:id="@+id/tv_date_create"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ngày mở bán : " />

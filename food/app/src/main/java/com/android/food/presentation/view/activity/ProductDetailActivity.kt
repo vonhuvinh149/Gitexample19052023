@@ -2,6 +2,7 @@ package com.android.food.presentation.view.activity
 
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,6 +10,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isGone
@@ -25,6 +27,7 @@ import com.android.food.data.api.model.Cart
 import com.android.food.data.api.model.Product
 import com.android.food.presentation.view.adapter.GalleryProductAdapter
 import com.android.food.presentation.viewmodel.ProductViewModel
+import com.android.food.utils.ProductUtils
 import com.android.food.utils.StringUtils
 import com.android.food.utils.ToastUtils
 import com.bumptech.glide.Glide
@@ -41,17 +44,19 @@ class ProductDetailActivity : AppCompatActivity() {
     private var tvName: TextView? = null
     private var tvPrice: TextView? = null
     private var tvAddress: TextView? = null
+    private var tvDate: TextView? = null
     private lateinit var imgProduct: ImageView
     private var btnAddToCart: LinearLayout? = null
+    private val sharePreference = AppSharePreference(this)
     private var productLiveData = MutableLiveData<Product>()
-    private var token: String = ""
     private lateinit var galleryProductAdapter: GalleryProductAdapter
     private lateinit var galleryRecyclerView: RecyclerView
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_detail)
-        token = AppSharePreference(this@ProductDetailActivity).getUser()?.token ?: ""
+
         productViewModel =
             ViewModelProvider(this@ProductDetailActivity, object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -67,7 +72,7 @@ class ProductDetailActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        if (token.isNotBlank()) {
+        if (sharePreference.isTokenValid()) {
             menuInflater.inflate(R.menu.menu_product, menu)
             val rootView = menu?.findItem(R.id.item_menu_cart)?.actionView
             cartItemArea = rootView?.findViewById(R.id.frame_layout_cart_area)
@@ -102,6 +107,7 @@ class ProductDetailActivity : AppCompatActivity() {
         toolBar = findViewById(R.id.toolbar_back)
         layoutLoading = findViewById(R.id.layout_loading)
         tvName = findViewById(R.id.tv_name_product)
+        tvDate = findViewById(R.id.tv_date_create)
         tvPrice = findViewById(R.id.tv_price)
         tvAddress = findViewById(R.id.tv_address)
         btnAddToCart = findViewById(R.id.btn_add_to_cart)
@@ -118,6 +124,7 @@ class ProductDetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun observerData() {
         productViewModel.executeGetCart()
 
@@ -144,7 +151,8 @@ class ProductDetailActivity : AppCompatActivity() {
                     "Giá: %s VND",
                     StringUtils.formatCurrency(it.price.toInt())
                 )
-                tvAddress?.text = it.address
+                tvAddress?.text = "Địa chỉ: ${it.address}"
+                tvDate?.text = "Ngày mở bán: ${StringUtils.formatDate(it.dateUpdated)}"
                 Glide.with(this).load(AppConstant.BASE_URL + it.image)
                     .placeholder(R.drawable.ic_logo)
                     .error(R.drawable.no_image)
@@ -171,7 +179,7 @@ class ProductDetailActivity : AppCompatActivity() {
 
     private fun event(id: String) {
         btnAddToCart?.setOnClickListener {
-            if (token.isNotBlank()) {
+            if (sharePreference.isTokenValid()) {
                 productViewModel.executeAddToCart(id)
             } else {
                 ToastUtils.showToast(this@ProductDetailActivity, "vui lòng đăng nhập")
@@ -180,9 +188,7 @@ class ProductDetailActivity : AppCompatActivity() {
                     val intent = Intent(this@ProductDetailActivity, SignInActivity::class.java)
                     startActivity(intent)
                 }
-
             }
         }
     }
-
 }

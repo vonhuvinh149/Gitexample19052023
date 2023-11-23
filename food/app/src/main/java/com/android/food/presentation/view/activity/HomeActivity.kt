@@ -61,7 +61,7 @@ class HomeActivity : AppCompatActivity() {
                             runBlocking {
                                 delay(1000)
                                 val intent =
-                                    Intent(this@HomeActivity, SignInRefreshActivity::class.java)
+                                    Intent(this@HomeActivity, TokenRefreshActivity::class.java)
                                 startActivity(intent)
                             }
                         }

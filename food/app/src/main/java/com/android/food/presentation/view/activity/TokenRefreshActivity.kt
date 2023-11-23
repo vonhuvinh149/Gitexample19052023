@@ -16,7 +16,7 @@ import com.android.food.common.AppSharePreference
 import com.android.food.presentation.viewmodel.SignInViewModel
 import com.android.food.utils.ToastUtils
 
-class SignInRefreshActivity : AppCompatActivity() {
+class TokenRefreshActivity : AppCompatActivity() {
 
     private var btnLogin: TextView? = null
     private var edtPassword: EditText? = null
@@ -30,10 +30,10 @@ class SignInRefreshActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in_refresh)
 
-        signInViewModel = ViewModelProvider(this@SignInRefreshActivity,
+        signInViewModel = ViewModelProvider(this@TokenRefreshActivity,
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return SignInViewModel(this@SignInRefreshActivity) as T
+                    return SignInViewModel(this@TokenRefreshActivity) as T
                 }
             })[SignInViewModel::class.java]
 
@@ -45,7 +45,7 @@ class SignInRefreshActivity : AppCompatActivity() {
 
     private fun event() {
         btnToSignIn?.setOnClickListener {
-            val intent = Intent(this@SignInRefreshActivity, SignInActivity::class.java)
+            val intent = Intent(this@TokenRefreshActivity, SignInActivity::class.java)
             startActivity(intent)
         }
 
@@ -78,13 +78,13 @@ class SignInRefreshActivity : AppCompatActivity() {
             when (it) {
                 is AppResource.Success -> {
                     Toast.makeText(this, "Login success !", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this@SignInRefreshActivity, HomeActivity::class.java)
+                    val intent = Intent(this@TokenRefreshActivity, HomeActivity::class.java)
                     startActivity(intent)
                     finish()
                 }
 
                 is AppResource.Error -> {
-                    ToastUtils.showToast(this@SignInRefreshActivity, it.message ?: "")
+                    ToastUtils.showToast(this@TokenRefreshActivity, it.message ?: "")
                 }
             }
         }

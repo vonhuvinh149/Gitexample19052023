@@ -18,7 +18,7 @@ import com.android.food.data.api.model.User
 import com.android.food.presentation.view.activity.HomeActivity
 import com.android.food.presentation.view.activity.RegisterActivity
 import com.android.food.presentation.view.activity.SignInActivity
-import com.android.food.presentation.view.activity.SignInRefreshActivity
+import com.android.food.presentation.view.activity.TokenRefreshActivity
 import com.android.food.utils.StringUtils
 import com.android.food.utils.ToastUtils
 
@@ -80,7 +80,7 @@ class ProfileFragment : Fragment() {
                 myUser = sharePreference.getUser() ?: User()
             }else{
                 ToastUtils.showToast(context , "Phiên làm việc đã hết hạng vui lòng đăng nhập lại !")
-                val intent = Intent(context , SignInRefreshActivity::class.java)
+                val intent = Intent(context , TokenRefreshActivity::class.java)
                 startActivity(intent)
             }
         }

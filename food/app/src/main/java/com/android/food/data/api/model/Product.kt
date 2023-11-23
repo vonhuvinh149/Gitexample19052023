@@ -9,5 +9,6 @@ data class Product(
     var price: Long = 0,
     var image: String = "",
     var quantity: Int = 0,
+    var dateUpdated : String = "" ,
     var gallery: List<String> = emptyList()
 ) : Serializable

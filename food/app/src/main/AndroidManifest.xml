@@ -16,7 +16,7 @@
         android:theme="@style/Theme.Food"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.view.activity.SignInRefreshActivity"
+            android:name=".presentation.view.activity.TokenRefreshActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

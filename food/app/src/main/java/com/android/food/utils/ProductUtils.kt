@@ -13,7 +13,8 @@ class ProductUtils {
                 price = productDTO.price ?: 0,
                 image = productDTO.img ?: "",
                 quantity = productDTO.quantity ?: 0,
-                gallery = productDTO.gallery ?: emptyList()
+                gallery = productDTO.gallery ?: emptyList() ,
+                dateUpdated = productDTO.dateCreated ?: ""
             )
         }
     }

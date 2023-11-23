@@ -13,7 +13,7 @@ data class ProductDTO(
     @SerializedName("gallery")
     val gallery: List<String>?,
     @SerializedName("date_created")
-    val dateCreated: String,
+    val dateCreated: String?,
     @SerializedName("date_updated")
     val dateUpdated: List<String>?,
     @SerializedName("__v")

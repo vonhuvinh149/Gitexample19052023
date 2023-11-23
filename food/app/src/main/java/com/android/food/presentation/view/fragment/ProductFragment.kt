@@ -30,7 +30,7 @@ import com.android.food.data.api.model.Cart
 import com.android.food.presentation.view.activity.CartActivity
 import com.android.food.presentation.view.activity.ProductDetailActivity
 import com.android.food.presentation.view.activity.SignInActivity
-import com.android.food.presentation.view.activity.SignInRefreshActivity
+import com.android.food.presentation.view.activity.TokenRefreshActivity
 import com.android.food.presentation.view.adapter.ProductAdapter
 import com.android.food.presentation.viewmodel.ProductViewModel
 import com.android.food.utils.ToastUtils
@@ -93,7 +93,7 @@ class ProductFragment : Fragment() {
                             "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại."
                         )
                         delay(1000)
-                        val intent = Intent(context, SignInRefreshActivity::class.java)
+                        val intent = Intent(context, TokenRefreshActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -158,7 +158,7 @@ class ProductFragment : Fragment() {
                         )
                         runBlocking {
                             delay(1000)
-                            val intent = Intent(context, SignInRefreshActivity::class.java)
+                            val intent = Intent(context, TokenRefreshActivity::class.java)
                             startActivity(intent)
                         }
                     }

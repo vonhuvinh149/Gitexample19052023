@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_shape"
     android:orientation="vertical"
-    tools:context=".presentation.view.activity.SignInRefreshActivity">
+    tools:context=".presentation.view.activity.TokenRefreshActivity">
 
     <Toolbar
         android:layout_alignParentStart="true"
