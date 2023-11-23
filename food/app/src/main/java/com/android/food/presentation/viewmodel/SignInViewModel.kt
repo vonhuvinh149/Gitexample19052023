@@ -45,15 +45,12 @@ class SignInViewModel(val context: Context) : ViewModel() {
                             val user = UserUtils.parseUserDTO(response.body()?.data)
                             userLiveData.value = AppResource.Success(user)
                             // save token when login success
-                            AppSharePreference(context).saveUser(
-                                user
-                            )
+                            AppSharePreference(context).saveUser(user)
                         } else {
                             val errorResponse = response.errorBody()?.string() ?: "{}"
                             val jsonError = JSONObject(errorResponse)
                             userLiveData.value = AppResource.Error(jsonError.optString("message"))
                         }
-
                         loadingLiveData.value = false
                     }
 
@@ -65,7 +62,7 @@ class SignInViewModel(val context: Context) : ViewModel() {
         }
     }
 
-    // update refresh
+    // refresh token
     fun executeTokenRefresh(password: String, email: String) {
         loadingLiveData.value = true
         viewModelScope.launch(Dispatchers.IO) {
@@ -78,7 +75,7 @@ class SignInViewModel(val context: Context) : ViewModel() {
                         if (response.isSuccessful) {
                             val user = UserUtils.parseUserDTO(response.body()?.data)
                             tokenRefresh.value = AppResource.Success(user)
-                            // save token when login success
+                            // save refresh token
                             AppSharePreference(context).refreshToken(user.token)
                         } else {
                             val errorResponse = response.errorBody()?.string() ?: "{}"
@@ -92,7 +89,6 @@ class SignInViewModel(val context: Context) : ViewModel() {
                         tokenRefresh.value = AppResource.Error(t.message.toString())
                         loadingLiveData.value = false
                     }
-
                 })
         }
     }
