@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".RadioActivity">
+
+   <RadioGroup
+       android:id="@+id/rad_test"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content">
+       <RadioButton
+           android:id="@+id/rad_nam"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Nam"
+           android:textColor="#D31B1B"
+           android:textSize="16sp"
+           android:textStyle="bold" />
+
+       <RadioButton
+           android:id="@+id/rad_nu"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Nu"
+           android:textColor="#D31B1B"
+           android:textSize="16sp"
+           android:textStyle="bold" />
+   </RadioGroup>
+
+    <Button
+        android:id="@+id/btn_test"
+        android:text="click me!"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

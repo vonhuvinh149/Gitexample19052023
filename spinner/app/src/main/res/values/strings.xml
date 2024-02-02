@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">spinner</string>
+    <array name="arr_string_test">
+        <item>Xiaomi</item>
+        <item>Iphone</item>
+        <item>Oppo</item>
+        <item>SamSung</item>
+        <item>Nokia</item>
+    </array>
+</resources>

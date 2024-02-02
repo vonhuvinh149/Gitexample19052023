@@ -7,8 +7,6 @@ import android.widget.Button
 class ThreeActivity : AppCompatActivity() {
 
     private var btnAdd: Button? = null
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_three)

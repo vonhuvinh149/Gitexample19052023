@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">android_extensions</string>
+    <string-array name="arrStringProductName">
+        <item>IPHONE</item>
+        <item>SAMSUNG</item>
+        <item>OPPO</item>
+        <item>XIAOMI</item>
+        <item>REALME</item>
+    </string-array>
+</resources>

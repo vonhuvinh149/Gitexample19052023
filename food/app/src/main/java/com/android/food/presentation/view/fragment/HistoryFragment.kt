@@ -53,6 +53,8 @@ class HistoryFragment : Fragment() {
 
         view = inflater.inflate(R.layout.fragment_history, container, false)
 
+        sharePreference = AppSharePreference(requireContext())
+
         initView()
         observerData()
         event()
@@ -62,6 +64,7 @@ class HistoryFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+
         sharePreference = AppSharePreference(context)
 
         historyVIewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
@@ -75,6 +78,8 @@ class HistoryFragment : Fragment() {
                 return ProductViewModel(context) as T
             }
         })[ProductViewModel::class.java]
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
