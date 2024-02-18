@@ -1,10 +1,8 @@
 package com.android.food.presentation.view.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -32,7 +30,6 @@ import com.android.food.presentation.view.adapter.HistoryAdapter
 import com.android.food.presentation.viewmodel.HistoryVIewModel
 import com.android.food.presentation.viewmodel.ProductViewModel
 
-
 class HistoryFragment : Fragment() {
 
     private lateinit var historyVIewModel: HistoryVIewModel
@@ -55,31 +52,23 @@ class HistoryFragment : Fragment() {
 
         sharePreference = AppSharePreference(requireContext())
 
-        initView()
-        observerData()
-        event()
-
-        return view
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        sharePreference = AppSharePreference(context)
-
         historyVIewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return HistoryVIewModel(context) as T
+                return HistoryVIewModel(requireContext()) as T
             }
         })[HistoryVIewModel::class.java]
 
         productViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return ProductViewModel(context) as T
+                return ProductViewModel(requireContext()) as T
             }
         })[ProductViewModel::class.java]
 
+        initView()
+        observerData()
+        event()
 
+        return view
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

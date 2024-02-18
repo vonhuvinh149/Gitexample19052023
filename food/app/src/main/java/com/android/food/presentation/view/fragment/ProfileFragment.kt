@@ -44,6 +44,21 @@ class ProfileFragment : Fragment() {
 
         view = inflater.inflate(R.layout.fragment_profile, container, false)
 
+        sharePreference = AppSharePreference(requireContext())
+
+        if (sharePreference.isTokenValid()) {
+            if (sharePreference.isTokenExpirationTime()) {
+                myUser = sharePreference.getUser() ?: User()
+            } else {
+                ToastUtils.showToast(
+                    requireContext(),
+                    "Phiên làm việc đã hết hạng vui lòng đăng nhập lại !"
+                )
+                val intent = Intent(context, TokenRefreshActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
         initView()
         bindingData()
         event()
@@ -67,22 +82,6 @@ class ProfileFragment : Fragment() {
         btnRegister?.setOnClickListener {
             val intent = Intent(context, RegisterActivity::class.java)
             startActivity(intent)
-        }
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        sharePreference = AppSharePreference(context)
-
-        if (sharePreference.isTokenValid()){
-            if (sharePreference.isTokenExpirationTime()){
-                myUser = sharePreference.getUser() ?: User()
-            }else{
-                ToastUtils.showToast(context , "Phiên làm việc đã hết hạng vui lòng đăng nhập lại !")
-                val intent = Intent(context , TokenRefreshActivity::class.java)
-                startActivity(intent)
-            }
         }
     }
 

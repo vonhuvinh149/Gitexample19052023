@@ -56,24 +56,21 @@ class ProductFragment : Fragment() {
 
         view = inflater.inflate(R.layout.fragment_product, container, false)
 
+        sharePreference = AppSharePreference(requireContext())
+
+        productViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return ProductViewModel(requireContext()) as T
+            }
+        }
+
+        )[ProductViewModel::class.java]
+
         initView()
         observerData()
         event()
 
         return view
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        sharePreference = AppSharePreference(context)
-
-        productViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return ProductViewModel(context) as T
-            }
-        }
-
-        )[ProductViewModel::class.java]
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
