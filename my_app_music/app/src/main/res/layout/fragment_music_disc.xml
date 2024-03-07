@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".presentation.view.fragment.MusicDiscFragment">
+
+    <TextView
+        android:id="@+id/tv_title_music_disc"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="Tung quen"
+        android:layout_marginBottom="60dp"
+        android:layout_above="@id/img_circle"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_circle"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        android:alpha=".8"
+        android:layout_centerInParent="true"
+        android:src="@drawable/img_logo"
+        app:civ_border_color="#273748"
+        app:civ_border_width=".5dp" />
+
+</RelativeLayout>
