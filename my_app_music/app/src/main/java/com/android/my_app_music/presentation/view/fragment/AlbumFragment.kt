@@ -55,7 +55,6 @@ class AlbumFragment : Fragment() {
                 intent.putExtra(AppConstance.IMAGE_URL_ALBUM_KEY, url)
                 startActivity(intent)
             }
-
         })
     }
 

@@ -1,5 +1,6 @@
 package com.android.my_app_music.presentation.view.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -12,8 +13,10 @@ import com.android.my_app_music.R
 import com.android.my_app_music.common.AppConstance
 import com.android.my_app_music.common.AppResource
 import com.android.my_app_music.data.model.Song
+import com.android.my_app_music.data.service.SongService
 import com.android.my_app_music.presentation.view.adapter.SongAdapter
 import com.android.my_app_music.presentation.viewmodel.AlbumViewModel
+import com.android.my_app_music.utils.OnClickItem
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -42,6 +45,27 @@ class AlbumActivity : AppCompatActivity() {
         createToolBar()
         getDataFromIntent()
         observerData()
+        event()
+    }
+
+    private fun event() {
+        songAdapter.onClickItem(object : OnClickItem{
+            override fun onClick(position: Int) {
+                val intent = Intent(this@AlbumActivity , PlaySongActivity::class.java)
+                intent.putExtra(AppConstance.POSITION_SONG_KEY, position)
+                intent.putExtra(AppConstance.LIST_SONG_KEY, ArrayList(listSongs))
+                startActivity(intent)
+                finish()
+            }
+        })
+
+        btnPlayAll?.setOnClickListener {
+            val intent = Intent(this@AlbumActivity , PlaySongActivity::class.java)
+            intent.putExtra(AppConstance.POSITION_SONG_KEY, 0)
+            intent.putExtra(AppConstance.LIST_SONG_KEY, ArrayList(listSongs))
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun observerData() {

@@ -4,8 +4,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Binder
@@ -18,6 +20,8 @@ import com.android.my_app_music.R
 import com.android.my_app_music.common.AppConstance
 import com.android.my_app_music.data.model.Song
 import com.android.my_app_music.presentation.view.activity.PlaySongActivity
+import com.android.my_app_music.utils.DataChangeFromServiceListener
+import java.io.IOException
 
 class SongService : Service() {
 
@@ -33,6 +37,8 @@ class SongService : Service() {
     private val binder = LocalBinder()
     private var isRepeatSong = false
     private var isClickItem = false
+    private var isChangeSong = false
+    private var newPosition = 0
 
     companion object {
         const val ACTION_PLAY = 1
@@ -42,6 +48,7 @@ class SongService : Service() {
         const val ACTION_CLEAR = 5
         const val ACTION_REPEAT = 6
         const val ACTION_SHUFFLE = 7
+        const val ACTION_CHANGE_SONG = 8
     }
 
     inner class LocalBinder : Binder() {
@@ -51,19 +58,12 @@ class SongService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        Log.d("BBB", "onBind")
         return binder
     }
 
     override fun onCreate() {
         super.onCreate()
         mediaPlayer = MediaPlayer()
-        Log.e("BBB", "onCreate")
-    }
-
-    override fun onUnbind(intent: Intent?): Boolean {
-        Log.e("BBB", "unBound")
-        return super.onUnbind(intent)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -74,28 +74,27 @@ class SongService : Service() {
                 position = intent.getIntExtra(AppConstance.POSITION_SONG_KEY, 0)
                 listSongs =
                     intent.getParcelableArrayListExtra(AppConstance.LIST_SONG_KEY) ?: arrayListOf()
-                isDataFromActivity = true
-                isPlaying = true
-                mediaPlayer?.setOnCompletionListener {
-                    if (isRepeatSong) {
-                        mediaPlayer?.isLooping = true
-                    } else {
-                        nextSong()
-                    }
+
+                if (listSongs.size > 0) {
+                    song = listSongs[position]
                 }
+
+                playSong(song.songUrl ?: "")
+                isDataFromActivity = true
+                isChangeSong = true
+                isPlaying = true
             }
-//            if (isClickItem) {
-////                position = intent.getIntExtra(AppConstance.POSITION_SONG_KEY, 0)
-////                isClickItem = !isClickItem
-////            }
             val actionMusic = intent.getIntExtra(AppConstance.ACTION_RECEIVER_KEY, 0)
-            if (listSongs.size > 0) {
-                song = listSongs[position]
+            if (actionMusic == ACTION_CHANGE_SONG) {
+                newPosition = intent.getIntExtra(AppConstance.POSITION_SONG_KEY, 0)
             }
-            setupMediaPlayer(song.songUrl ?: "")
             handleActionNotification(actionMusic)
             createNotification()
-            playSong()
+
+            val intentReceiver = Intent(this, DataChangeReceiver::class.java)
+            intentReceiver.putExtra(AppConstance.CHANGE_POSITION_FROM_SERVICE, position)
+            intentReceiver.putExtra(AppConstance.CHECK_IS_PLAY, isPlaying)
+            sendBroadcast(intentReceiver)
         }
 
         return START_STICKY
@@ -109,22 +108,6 @@ class SongService : Service() {
             mediaPlayer = null
         }
     }
-
-    private fun setupMediaPlayer(url: String) {
-        if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer()
-        }
-        try {
-            mediaPlayer?.setAudioAttributes(
-                AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build()
-            )
-            mediaPlayer?.setDataSource(url)
-            mediaPlayer?.prepareAsync()
-        } catch (e: Exception) {
-            Log.e("BBB", e.message.toString())
-        }
-    }
-
 
     private fun setupRemoteView(): RemoteViews {
         val remoteView = RemoteViews(packageName, R.layout.layout_custom_notification)
@@ -168,6 +151,8 @@ class SongService : Service() {
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val intent = Intent(this@SongService, PlaySongActivity::class.java)
+        intent.putExtra(AppConstance.POSITION_SONG_KEY, position)
+        intent.putExtra(AppConstance.LIST_SONG_KEY, ArrayList(listSongs))
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
@@ -187,13 +172,44 @@ class SongService : Service() {
                 CHANEL_ID,
                 "Version New",
                 NotificationManager.IMPORTANCE_HIGH
-            )
+            ).apply {
+                description = "Channel Description"
+            }
 
             notificationChannel.setSound(null, null)
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
         startForeground(1, notification.build())
+    }
+
+    private fun playSong(url: String) {
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer()
+            mediaPlayer?.setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build()
+            )
+        }
+
+        try {
+            mediaPlayer?.stop()
+            mediaPlayer?.reset()
+            mediaPlayer?.setDataSource(url)
+            mediaPlayer?.prepare()
+            mediaPlayer?.start()
+            isPlaying = true
+            mediaPlayer?.setOnCompletionListener {
+                if (isRepeatSong) {
+                    mediaPlayer?.isLooping = true
+                } else {
+                    nextSong()
+                }
+            }
+        } catch (e: IOException) {
+            Log.e("MusicPlayerService", "Error setting data source", e)
+        }
     }
 
     private fun getPendingIntent(context: Context, action: Int): PendingIntent {
@@ -236,6 +252,10 @@ class SongService : Service() {
             ACTION_SHUFFLE -> {
                 shuffleSong()
             }
+
+            ACTION_CHANGE_SONG -> {
+                changeSong()
+            }
         }
     }
 
@@ -244,9 +264,9 @@ class SongService : Service() {
     }
 
     private fun repeatSong() {
-
         if (mediaPlayer != null) {
             isRepeatSong = !isRepeatSong
+
         }
     }
 
@@ -259,8 +279,7 @@ class SongService : Service() {
         if (position < 0) {
             position = listSongs.size - 1
         }
-        setupMediaPlayer(listSongs[position].songUrl ?: "")
-        resumeMusic()
+        playSong(listSongs[position].songUrl ?: "")
     }
 
     private fun nextSong() {
@@ -272,8 +291,7 @@ class SongService : Service() {
         if (position > listSongs.size - 1) {
             position = 0
         }
-        setupMediaPlayer(listSongs[position].songUrl ?: "")
-        playSong()
+        playSong(listSongs[position].songUrl ?: "")
     }
 
     private fun pauseSong() {
@@ -281,6 +299,20 @@ class SongService : Service() {
             mediaPlayer?.pause()
             isPlaying = false
         }
+    }
+
+    private fun changeSong() {
+        if (mediaPlayer != null && isPlaying) {
+            if (newPosition == position) {
+                return
+            } else {
+                mediaPlayer?.stop()
+                mediaPlayer?.reset()
+                position = newPosition
+                isPlaying = false
+            }
+        }
+        playSong(listSongs[position].songUrl ?: "")
     }
 
     private fun resumeMusic() {
@@ -298,12 +330,4 @@ class SongService : Service() {
         return !isRepeatSong
     }
 
-    private fun playSong() {
-        if (mediaPlayer != null) {
-            mediaPlayer?.setOnPreparedListener {
-                mediaPlayer?.start()
-                isPlaying = true
-            }
-        }
-    }
 }

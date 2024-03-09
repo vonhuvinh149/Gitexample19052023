@@ -1,29 +1,29 @@
 package com.android.my_app_music.presentation.view.activity
 
-import android.content.ComponentName
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
+import android.content.IntentFilter
 import android.graphics.Color
-import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
-import android.os.IBinder
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.android.my_app_music.R
 import com.android.my_app_music.common.AppConstance
 import com.android.my_app_music.data.model.Song
 import com.android.my_app_music.data.service.SongService
 import com.android.my_app_music.presentation.view.adapter.ViewPagerPlaySongAdapter
+import com.android.my_app_music.presentation.view.fragment.ListSongFragment
 import com.android.my_app_music.presentation.view.fragment.MusicDiscFragment
-import com.android.my_app_music.presentation.view.fragment.PlayListSongFragment
+import com.android.my_app_music.utils.DataChangeFromServiceListener
 import java.util.concurrent.TimeUnit
 
 class PlaySongActivity : AppCompatActivity() {
@@ -42,28 +42,30 @@ class PlaySongActivity : AppCompatActivity() {
     private var isCheckRepeat: Boolean = false
     private var isCheckShuffle: Boolean = false
     private var isPlaying: Boolean = false
+    private lateinit var musicDiscFragment: MusicDiscFragment
 
     private lateinit var viewPagerPlaySongAdapter: ViewPagerPlaySongAdapter
     private lateinit var songService: SongService
     private var isBoundService: Boolean = false
+    private var duration = 0
 
-    companion object {
-        var position: Int = 0
-        private var mediaPlayer: MediaPlayer? = null
-        var listSongs: ArrayList<Song> = arrayListOf()
-    }
+    private var position: Int = 0
+    private var mediaPlayer: MediaPlayer? = null
+    private var listSongs: ArrayList<Song> = arrayListOf()
+    private lateinit var dataChangeFromServiceListener: DataChangeFromServiceListener
 
-    private val connection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            val binder = service as SongService.LocalBinder
-            songService = binder.getService()
-            isBoundService = true
-        }
+//    private val connection = object : ServiceConnection {
+//        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+//            val binder = service as SongService.LocalBinder
+//            songService = binder.getService()
+//            isBoundService = true
+//        }
+//
+//        override fun onServiceDisconnected(name: ComponentName?) {
+//            isBoundService = false
+//        }
+//    }
 
-        override fun onServiceDisconnected(name: ComponentName?) {
-            isBoundService = false
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,14 +74,32 @@ class PlaySongActivity : AppCompatActivity() {
 
         initView()
         getDataFromIntent()
+        musicDiscFragment = MusicDiscFragment(position, listSongs)
+        createViewPager()
 
         val intent = Intent(this@PlaySongActivity, SongService::class.java)
         intent.putExtra(AppConstance.POSITION_SONG_KEY, position)
         intent.putExtra(AppConstance.LIST_SONG_KEY, listSongs)
         startService(intent)
-        bindService(intent, connection, Context.BIND_AUTO_CREATE)
+
+        val filter = IntentFilter("YOUR_ACTION_NAME")
+        registerReceiver(broadcastReceiver, filter)
 
         event()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("BBB", "on start")
+    }
+
+    private fun createViewPager() {
+        viewPagerPlaySongAdapter = ViewPagerPlaySongAdapter(supportFragmentManager)
+        viewPagerPlaySongAdapter.addFragment(ListSongFragment(position, listSongs))
+        viewPagerPlaySongAdapter.addFragment(musicDiscFragment)
+
+        viewPager.adapter = viewPagerPlaySongAdapter
+        viewPager.currentItem = 1
     }
 
     private fun getDataFromIntent() {
@@ -92,159 +112,94 @@ class PlaySongActivity : AppCompatActivity() {
         }
     }
 
-    fun updatePosition(index: Int) {
-        if (index == position) {
-            return
-        } else {
-            val intent = Intent(this@PlaySongActivity, SongService::class.java)
-            intent.putExtra(AppConstance.CHECK_CLICK_ITEM, true)
-            intent.putExtra(AppConstance.POSITION_SONG_KEY, index)
-            startService(intent)
-        }
-    }
-
-
-    private fun createMediaPlayer() {
-        mediaPlayer?.reset()
-        try {
-            mediaPlayer?.setAudioAttributes(
-                AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build()
-            )
-            mediaPlayer?.setDataSource(listSongs[position].songUrl)
-            mediaPlayer?.prepareAsync()
-        } catch (e: Exception) {
-            Log.e("BBB", e.message.toString())
-        }
-    }
-
-    private fun event() {
-        createMediaPlayer()
-        mediaPlayer?.setOnCompletionListener {
-            if (isCheckRepeat) {
-                mediaPlayer?.seekTo(0)
-                mediaPlayer?.start()
-            } else {
-                if (isCheckShuffle) {
-                    if (mediaPlayer?.isPlaying == true) {
-                        mediaPlayer?.stop()
-                        btnPlay?.setImageResource(R.drawable.ic_play)
-                    }
-                    val random = (0 until listSongs.size).random()
-                    position = random
-                    createMediaPlayer()
-                    btnPlay?.setImageResource(R.drawable.ic_pause)
-                } else {
-                    nextSong()
-                }
+    private val broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == "YOUR_ACTION_NAME") {
+                val position = intent.getIntExtra(AppConstance.CHANGE_POSITION_FROM_SERVICE, 0)
+                isPlaying = intent.getBooleanExtra(AppConstance.CHECK_IS_PLAY, false)
+                updateView()
+                musicDiscFragment.updateView(position)
             }
         }
+    }
 
-        val durationInMillis = mediaPlayer?.duration ?: 0
-        val durationText = formatDuration(durationInMillis)
+    fun updateView() {
+        if (isPlaying) {
+            btnPlay?.setImageResource(R.drawable.ic_pause)
+        } else {
+            btnPlay?.setImageResource(R.drawable.ic_play)
+        }
+    }
 
-        btnPlay?.setImageResource(R.drawable.ic_pause)
-        tvTimeTotal?.text = durationText
-        updateTimeSong()
-        setupSeekbar()
+//    fun updatePosition(index: Int) {
+//        if (index == position) {
+//            return
+//        } else {
+//            val intent = Intent(this@PlaySongActivity, SongService::class.java)
+//            intent.putExtra(AppConstance.CHECK_CLICK_ITEM, true)
+//            intent.putExtra(AppConstance.POSITION_SONG_KEY, index)
+//            startService(intent)
+//        }
+//    }
+
+    private fun event() {
 
         btnNext?.setOnClickListener {
-            val intent = Intent(this@PlaySongActivity, SongService::class.java)
-            intent.putExtra(AppConstance.ACTION_RECEIVER_KEY, SongService.ACTION_NEXT)
-            startService(intent)
+            nextSong()
         }
 
         btnPrev?.setOnClickListener {
-            val intent = Intent(this@PlaySongActivity, SongService::class.java)
-            intent.putExtra(AppConstance.ACTION_RECEIVER_KEY, SongService.ACTION_PREV)
-            startService(intent)
+            prevSong()
         }
 
         btnShuffle?.setOnClickListener {
-            shuffleSong()
+
         }
 
         btnRepeat?.setOnClickListener {
-            isCheckRepeat = songService.getIsRepeat()
-            if (isCheckRepeat) {
-                btnRepeat?.setImageResource(R.drawable.ic_repeat_blue)
-            } else {
-                btnRepeat?.setImageResource(R.drawable.ic_repeat)
-            }
-            val intent = Intent(this@PlaySongActivity, SongService::class.java)
-            intent.putExtra(AppConstance.ACTION_RECEIVER_KEY, SongService.ACTION_REPEAT)
-            startService(intent)
+            repeatSong()
         }
 
         btnPlay?.setOnClickListener {
-            isPlaying = songService.getIsPlaying()
-            val intent = Intent(this@PlaySongActivity, SongService::class.java)
-            if (isPlaying) {
-                intent.putExtra(AppConstance.ACTION_RECEIVER_KEY, SongService.ACTION_PAUSE)
-                btnPlay?.setImageResource(R.drawable.ic_play)
-            } else {
-                intent.putExtra(AppConstance.ACTION_RECEIVER_KEY, SongService.ACTION_PLAY)
-                btnPlay?.setImageResource(R.drawable.ic_pause)
-            }
-            startService(intent)
+            playSong()
         }
     }
 
-    private fun shuffleSong() {
-        isCheckShuffle = !isCheckShuffle
-        if (isCheckShuffle) {
-            btnShuffle?.setImageResource(R.drawable.ic_shuffle_blue)
+    private fun playSong() {
+        val intent = Intent(this@PlaySongActivity, SongService::class.java)
+        Log.d("BBB", isPlaying.toString())
+        if (isPlaying) {
+            intent.putExtra(AppConstance.ACTION_RECEIVER_KEY, SongService.ACTION_PAUSE)
+            btnPlay?.setImageResource(R.drawable.ic_play)
         } else {
-            btnShuffle?.setImageResource(R.drawable.ic_suf)
+            intent.putExtra(AppConstance.ACTION_RECEIVER_KEY, SongService.ACTION_PLAY)
+            btnPlay?.setImageResource(R.drawable.ic_pause)
         }
+        startService(intent)
+    }
+
+    private fun nextSong() {
+        val intent = Intent(this@PlaySongActivity, SongService::class.java)
+        intent.putExtra(AppConstance.ACTION_RECEIVER_KEY, SongService.ACTION_NEXT)
+        startService(intent)
     }
 
     private fun prevSong() {
-        if (mediaPlayer?.isPlaying == true) {
-            mediaPlayer?.stop()
-            btnPlay?.setImageResource(R.drawable.ic_play)
-        }
-        position--
-        if (position < 0) {
-            position = listSongs.size - 1
-        }
-        createMediaPlayer()
-        btnPlay?.setImageResource(R.drawable.ic_pause)
-    }
-
-
-    private fun nextSong() {
-        if (mediaPlayer?.isPlaying == true) {
-            mediaPlayer?.stop()
-            btnPlay?.setImageResource(R.drawable.ic_play)
-        }
-        position++
-        if (position > listSongs.size - 1) {
-            position = 0
-        }
-        MusicDiscFragment.updatePosition(position)
-        createMediaPlayer()
-        btnPlay?.setImageResource(R.drawable.ic_pause)
+        val intent = Intent(this@PlaySongActivity, SongService::class.java)
+        intent.putExtra(AppConstance.ACTION_RECEIVER_KEY, SongService.ACTION_PREV)
+        startService(intent)
     }
 
     private fun repeatSong() {
-        isCheckRepeat = !isCheckRepeat
+        isCheckRepeat = songService.getIsRepeat()
         if (isCheckRepeat) {
             btnRepeat?.setImageResource(R.drawable.ic_repeat_blue)
         } else {
             btnRepeat?.setImageResource(R.drawable.ic_repeat)
         }
-    }
-
-    private fun playSong() {
-        if (mediaPlayer?.isPlaying == true) {
-            btnPlay?.setImageResource(R.drawable.ic_play)
-            mediaPlayer?.pause()
-            updateTimeSong()
-        } else {
-            btnPlay?.setImageResource(R.drawable.ic_pause)
-            mediaPlayer?.seekTo(mediaPlayer?.currentPosition ?: 0)
-            mediaPlayer?.start()
-        }
+        val intent = Intent(this@PlaySongActivity, SongService::class.java)
+        intent.putExtra(AppConstance.ACTION_RECEIVER_KEY, SongService.ACTION_REPEAT)
+        startService(intent)
     }
 
     private fun updateTimeSong() {
@@ -257,10 +212,8 @@ class PlaySongActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        unregisterReceiver(broadcastReceiver)
         super.onDestroy()
-        // Giải phóng tài nguyên khi hoạt động bị hủy
-        mediaPlayer?.release()
-        mediaPlayer = null
     }
 
     private fun formatDuration(durationInMillis: Int): String {
@@ -285,10 +238,6 @@ class PlaySongActivity : AppCompatActivity() {
         btnPlay = findViewById(R.id.btn_play)
         mediaPlayer = MediaPlayer()
         songService = SongService()
-        viewPagerPlaySongAdapter = ViewPagerPlaySongAdapter(supportFragmentManager)
-        viewPagerPlaySongAdapter.addFragment(PlayListSongFragment())
-        viewPagerPlaySongAdapter.addFragment(MusicDiscFragment())
-        viewPager.adapter = viewPagerPlaySongAdapter
 
         setSupportActionBar(toolBarPlaySong)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -315,4 +264,5 @@ class PlaySongActivity : AppCompatActivity() {
             }
         })
     }
+
 }

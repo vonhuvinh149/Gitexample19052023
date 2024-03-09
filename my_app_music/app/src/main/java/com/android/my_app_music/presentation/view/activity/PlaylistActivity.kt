@@ -25,7 +25,7 @@ class PlaylistActivity : AppCompatActivity() {
     private lateinit var playlistViewModel: PlaylistViewModel
     private var recyclerView: RecyclerView? = null
     private lateinit var songAdapter: SongAdapter
-    private var imgCircle: CircleImageView? = null
+    private var btnPlayAll: CircleImageView? = null
     private var imgBackground: ImageView? = null
     private var tvTitle: TextView? = null
     private var listSongs: MutableList<Song> = mutableListOf()
@@ -41,6 +41,7 @@ class PlaylistActivity : AppCompatActivity() {
 
         initView()
         createToolBar()
+        getDataFromIntent()
         observerData()
         event()
 
@@ -53,14 +54,16 @@ class PlaylistActivity : AppCompatActivity() {
                 intent.putExtra(AppConstance.POSITION_SONG_KEY, position)
                 intent.putExtra(AppConstance.LIST_SONG_KEY, ArrayList(listSongs))
                 startActivity(intent)
+                finish()
             }
         })
 
-        imgCircle?.setOnClickListener {
+        btnPlayAll?.setOnClickListener {
             val intent = Intent(this@PlaylistActivity, PlaySongActivity::class.java)
             intent.putExtra(AppConstance.POSITION_SONG_KEY, 0)
             intent.putExtra(AppConstance.LIST_SONG_KEY, ArrayList(listSongs))
             startActivity(intent)
+            finish()
         }
     }
 
@@ -90,16 +93,11 @@ class PlaylistActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        imgCircle = findViewById(R.id.img_circle_playlist)
+        btnPlayAll = findViewById(R.id.btn_play_all_playlist)
         imgBackground = findViewById(R.id.img_background_playlist)
         tvTitle = findViewById(R.id.tv_title_playlist_song)
         recyclerView = findViewById(R.id.recycler_view_song_playlist)
         toolbar = findViewById(R.id.toolbar_playlist)
-        getDataFromIntent()
-
-        tvTitle?.text = title
-        Picasso.get().load(imgBackgroundUrl).into(imgBackground)
-
         recyclerView?.setHasFixedSize(true)
         songAdapter = SongAdapter()
     }
@@ -109,6 +107,8 @@ class PlaylistActivity : AppCompatActivity() {
             title = intent.getStringExtra(AppConstance.PLAYLIST_TITLE_KEY)
             playlistId = intent.getIntExtra(AppConstance.PLAYLIST_ID_KEY, 0)
             imgBackgroundUrl = intent.getStringExtra(AppConstance.IMAGE_URL_PLAYLIST_KEY)
+            tvTitle?.text = title
+            Picasso.get().load(imgBackgroundUrl).into(imgBackground)
         }
     }
 

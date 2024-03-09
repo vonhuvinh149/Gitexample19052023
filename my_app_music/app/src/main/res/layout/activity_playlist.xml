@@ -67,7 +67,7 @@
         tools:listitem="@layout/layout_item_list_song" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/img_circle_playlist"
+        android:id="@+id/btn_play_all_playlist"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_margin="10dp"
