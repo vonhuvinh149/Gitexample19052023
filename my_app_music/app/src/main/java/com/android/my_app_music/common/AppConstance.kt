@@ -15,4 +15,6 @@ object AppConstance {
     const val CURRENT_POSITION = "current-position"
     const val CHANGE_POSITION_FROM_SERVICE = "change-position"
     const val CHECK_IS_PLAY = "song-play"
+    const val CHECK_IS_SHUFFLE = "song-shuffle"
+    const val CHECK_IS_REPEAT = "song-repeat"
 }

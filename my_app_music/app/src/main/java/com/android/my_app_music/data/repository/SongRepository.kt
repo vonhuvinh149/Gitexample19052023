@@ -31,8 +31,4 @@ class SongRepository {
         })
     }
 
-    fun fetchSongDataFromFirebase(callback: (Song) -> Unit){
-
-    }
-
 }

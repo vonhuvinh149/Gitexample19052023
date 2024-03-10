@@ -18,6 +18,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.android.my_app_music.R
 import com.android.my_app_music.common.AppConstance
+import com.android.my_app_music.data.SongSharedPreference
 import com.android.my_app_music.data.model.Song
 import com.android.my_app_music.data.service.SongService
 import com.android.my_app_music.presentation.view.adapter.ViewPagerPlaySongAdapter
@@ -53,6 +54,7 @@ class PlaySongActivity : AppCompatActivity() {
     private var mediaPlayer: MediaPlayer? = null
     private var listSongs: ArrayList<Song> = arrayListOf()
     private lateinit var dataChangeFromServiceListener: DataChangeFromServiceListener
+    private lateinit var songSharedPreference: SongSharedPreference
 
 //    private val connection = object : ServiceConnection {
 //        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -80,17 +82,14 @@ class PlaySongActivity : AppCompatActivity() {
         val intent = Intent(this@PlaySongActivity, SongService::class.java)
         intent.putExtra(AppConstance.POSITION_SONG_KEY, position)
         intent.putExtra(AppConstance.LIST_SONG_KEY, listSongs)
+        intent.putExtra(AppConstance.CHECK_IS_REPEAT, isCheckRepeat)
+        intent.putExtra(AppConstance.CHECK_IS_SHUFFLE, isCheckShuffle)
         startService(intent)
 
         val filter = IntentFilter("YOUR_ACTION_NAME")
         registerReceiver(broadcastReceiver, filter)
 
         event()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d("BBB", "on start")
     }
 
     private fun createViewPager() {
@@ -117,6 +116,7 @@ class PlaySongActivity : AppCompatActivity() {
             if (intent?.action == "YOUR_ACTION_NAME") {
                 val position = intent.getIntExtra(AppConstance.CHANGE_POSITION_FROM_SERVICE, 0)
                 isPlaying = intent.getBooleanExtra(AppConstance.CHECK_IS_PLAY, false)
+                Log.d("BBB" ,"ssss $isPlaying" )
                 updateView()
                 musicDiscFragment.updateView(position)
             }
@@ -153,7 +153,7 @@ class PlaySongActivity : AppCompatActivity() {
         }
 
         btnShuffle?.setOnClickListener {
-
+            shuffleSong()
         }
 
         btnRepeat?.setOnClickListener {
@@ -163,6 +163,19 @@ class PlaySongActivity : AppCompatActivity() {
         btnPlay?.setOnClickListener {
             playSong()
         }
+    }
+
+    private fun shuffleSong() {
+        isCheckShuffle = songSharedPreference.getIsShuffle()
+        if (isCheckShuffle) {
+            btnShuffle?.setImageResource(R.drawable.ic_suf)
+        } else {
+            btnShuffle?.setImageResource(R.drawable.ic_shuffle_blue)
+        }
+        songSharedPreference.saveIsCheckShuffle(!isCheckShuffle)
+        val intent = Intent(this@PlaySongActivity, SongService::class.java)
+        intent.putExtra(AppConstance.CHECK_IS_SHUFFLE, !isCheckShuffle)
+        startService(intent)
     }
 
     private fun playSong() {
@@ -191,14 +204,16 @@ class PlaySongActivity : AppCompatActivity() {
     }
 
     private fun repeatSong() {
-        isCheckRepeat = songService.getIsRepeat()
+        isCheckRepeat = songSharedPreference.getIsRepeat()
         if (isCheckRepeat) {
-            btnRepeat?.setImageResource(R.drawable.ic_repeat_blue)
-        } else {
             btnRepeat?.setImageResource(R.drawable.ic_repeat)
+        } else {
+            btnRepeat?.setImageResource(R.drawable.ic_repeat_blue)
         }
+        songSharedPreference.saveIsCheckRepeat(!isCheckRepeat)
         val intent = Intent(this@PlaySongActivity, SongService::class.java)
-        intent.putExtra(AppConstance.ACTION_RECEIVER_KEY, SongService.ACTION_REPEAT)
+
+        intent.putExtra(AppConstance.CHECK_IS_REPEAT, !isCheckRepeat)
         startService(intent)
     }
 
@@ -224,7 +239,6 @@ class PlaySongActivity : AppCompatActivity() {
         return String.format("%02d:%02d", minutes, seconds)
     }
 
-
     private fun initView() {
         toolBarPlaySong = findViewById(R.id.toolbar_play_song)
         seekBar = findViewById(R.id.seekbar_play)
@@ -238,6 +252,21 @@ class PlaySongActivity : AppCompatActivity() {
         btnPlay = findViewById(R.id.btn_play)
         mediaPlayer = MediaPlayer()
         songService = SongService()
+        songSharedPreference = SongSharedPreference(this)
+
+        isCheckRepeat = songSharedPreference.getIsRepeat()
+        isCheckShuffle = songSharedPreference.getIsShuffle()
+
+        if (isCheckShuffle) {
+            btnShuffle?.setImageResource(R.drawable.ic_shuffle_blue)
+        } else {
+            btnShuffle?.setImageResource(R.drawable.ic_suf)
+        }
+        if (isCheckRepeat) {
+            btnRepeat?.setImageResource(R.drawable.ic_repeat_blue)
+        } else {
+            btnRepeat?.setImageResource(R.drawable.ic_repeat)
+        }
 
         setSupportActionBar(toolBarPlaySong)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
