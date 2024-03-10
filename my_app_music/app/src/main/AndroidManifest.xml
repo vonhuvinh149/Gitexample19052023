@@ -55,6 +55,10 @@
             android:name=".data.service.DataChangeReceiver"
             android:enabled="true"
             android:exported="false" />
+        <receiver
+            android:name=".data.service.CurrentPositionReceiver"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

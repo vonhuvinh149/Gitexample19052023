@@ -13,6 +13,8 @@ object AppConstance {
     const val ACTION_RECEIVER_KEY = "action-receiver"
     const val CHECK_CLICK_ITEM = "click-item"
     const val CURRENT_POSITION = "current-position"
+    const val UPDATE_SEEK_TO = "update-seekTo"
+    const val DURATION_POSITION = "duration-position"
     const val CHANGE_POSITION_FROM_SERVICE = "change-position"
     const val CHECK_IS_PLAY = "song-play"
     const val CHECK_IS_SHUFFLE = "song-shuffle"

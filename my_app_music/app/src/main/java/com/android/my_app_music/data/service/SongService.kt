@@ -6,16 +6,19 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.android.my_app_music.R
 import com.android.my_app_music.common.AppConstance
+import com.android.my_app_music.data.SongSharedPreference
 import com.android.my_app_music.data.model.Song
 import com.android.my_app_music.presentation.view.activity.PlaySongActivity
 import java.io.IOException
@@ -38,6 +41,8 @@ class SongService : Service() {
     private var isClickItem = false
     private var isChangeSong = false
     private var newPosition = 0
+    private var handler = Handler()
+    private var currentPosition = 0
 
     companion object {
         const val ACTION_PLAY = 1
@@ -45,10 +50,8 @@ class SongService : Service() {
         const val ACTION_PREV = 3
         const val ACTION_NEXT = 4
         const val ACTION_CLEAR = 5
-
-        //        const val ACTION_REPEAT = 6
-        const val ACTION_SHUFFLE = 7
-        const val ACTION_CHANGE_SONG = 8
+        const val ACTION_SEEK_TO = 6
+        const val ACTION_CHANGE_SONG = 7
     }
 
     inner class LocalBinder : Binder() {
@@ -84,11 +87,29 @@ class SongService : Service() {
                 isChangeSong = true
                 isPlaying = true
             }
-            val actionMusic = intent.getIntExtra(AppConstance.ACTION_RECEIVER_KEY, 0)
-            isRepeatSong = intent.getBooleanExtra(AppConstance.CHECK_IS_REPEAT, false)
-            isShuffleSong = intent.getBooleanExtra(AppConstance.CHECK_IS_SHUFFLE, false)
+
+
+
+
+            if (intent.hasExtra(AppConstance.CHECK_IS_REPEAT)) {
+                isRepeatSong = intent.getBooleanExtra(AppConstance.CHECK_IS_REPEAT, false)
+            }
+
+            if (intent.hasExtra(AppConstance.CHECK_IS_SHUFFLE)) {
+                isShuffleSong = intent.getBooleanExtra(AppConstance.CHECK_IS_SHUFFLE, false)
+            }
+
             Log.d("BBB", isRepeatSong.toString())
-            Log.d("BBB", isShuffleSong.toString())
+
+
+            if (intent.hasExtra(AppConstance.UPDATE_SEEK_TO)) {
+                currentPosition = intent.getIntExtra(AppConstance.UPDATE_SEEK_TO, 0)
+                mediaPlayer?.seekTo(currentPosition)
+            }
+
+            updateCurrentPosition()
+
+            val actionMusic = intent.getIntExtra(AppConstance.ACTION_RECEIVER_KEY, 0)
             if (actionMusic == ACTION_CHANGE_SONG) {
                 newPosition = intent.getIntExtra(AppConstance.POSITION_SONG_KEY, 0)
             }
@@ -98,6 +119,7 @@ class SongService : Service() {
             val intentReceiver = Intent(this, DataChangeReceiver::class.java)
             intentReceiver.putExtra(AppConstance.CHANGE_POSITION_FROM_SERVICE, position)
             intentReceiver.putExtra(AppConstance.CHECK_IS_PLAY, isPlaying)
+            intentReceiver.putExtra(AppConstance.DURATION_POSITION, mediaPlayer?.duration)
             sendBroadcast(intentReceiver)
 
         }
@@ -112,6 +134,19 @@ class SongService : Service() {
             mediaPlayer = null
         }
     }
+
+    private fun updateCurrentPosition() {
+        handler.postDelayed(Runnable {
+            val intentCurrentPosition = Intent(this, CurrentPositionReceiver::class.java)
+            intentCurrentPosition.putExtra(
+                AppConstance.CURRENT_POSITION,
+                mediaPlayer?.currentPosition
+            )
+            sendBroadcast(intentCurrentPosition)
+            updateCurrentPosition()
+        }, 1000)
+    }
+
 
     private fun setupRemoteView(): RemoteViews {
 
@@ -205,22 +240,28 @@ class SongService : Service() {
             mediaPlayer?.reset()
             mediaPlayer?.setDataSource(url)
             mediaPlayer?.prepare()
-            mediaPlayer?.start()
-            isPlaying = true
-            mediaPlayer?.seekTo((mediaPlayer?.duration?.minus(8000)) ?: 0)
+            mediaPlayer?.setOnPreparedListener {
+                mediaPlayer?.start()
+                isPlaying = true
+            }
             mediaPlayer?.setOnCompletionListener {
                 if (isRepeatSong) {
+                    Log.d("BBB", "repeat")
                     mediaPlayer?.seekTo(0)
                     mediaPlayer?.start()
                 } else {
                     if (isShuffleSong) {
                         position = Random.nextInt(listSongs.size)
                         playSong(listSongs[position].songUrl ?: "")
+                        Log.d("BBB", "isShuffleSong")
                     } else {
                         nextSong()
+                        Log.d("BBB", "nextSong")
                     }
                     val intentReceiver = Intent(this, DataChangeReceiver::class.java)
                     intentReceiver.putExtra(AppConstance.CHANGE_POSITION_FROM_SERVICE, position)
+                    intentReceiver.putExtra(AppConstance.DURATION_POSITION, mediaPlayer?.duration)
+                    intentReceiver.putExtra(AppConstance.CHECK_IS_PLAY, isPlaying)
                     sendBroadcast(intentReceiver)
                 }
             }
@@ -265,7 +306,19 @@ class SongService : Service() {
             ACTION_CHANGE_SONG -> {
                 changeSong()
             }
+
+            ACTION_SEEK_TO -> {
+                updateSeekTo()
+            }
         }
+    }
+
+    private fun updateSeekTo() {
+//        mediaPlayer?.seekTo(currentPosition)
+//        val intent = Intent(this@SongService, DataChangeReceiver::class.java)
+//        intent.putExtra(AppConstance.DURATION_POSITION, mediaPlayer?.duration)
+//        sendBroadcast(intent)
+
     }
 
     private fun prevSong() {
@@ -300,6 +353,20 @@ class SongService : Service() {
             isPlaying = false
         }
     }
+
+//    private val updateRunnable = object : Runnable {
+//        override fun run() {
+//            sendCurrentPosition(currentPosition)
+//            handler.postDelayed(this, 1000L)
+//        }
+//    }
+
+    private fun sendCurrentPosition(currentPosition: Int) {
+        val intentReceiver = Intent(this, DataChangeReceiver::class.java)
+        intentReceiver.putExtra(AppConstance.CURRENT_POSITION, currentPosition)
+        sendBroadcast(intentReceiver)
+    }
+
 
     private fun changeSong() {
         if (mediaPlayer != null && isPlaying) {

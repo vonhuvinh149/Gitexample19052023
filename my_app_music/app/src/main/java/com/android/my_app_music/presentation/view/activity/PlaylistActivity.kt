@@ -34,7 +34,6 @@ class PlaylistActivity : AppCompatActivity() {
     private var playlistId: Int = 0
     private var toolbar: Toolbar? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playlist)
@@ -85,6 +84,10 @@ class PlaylistActivity : AppCompatActivity() {
 
                 is AppResource.Error -> {
                     Log.e("BBB", it.message.toString())
+                }
+
+                else -> {
+
                 }
             }
         }
