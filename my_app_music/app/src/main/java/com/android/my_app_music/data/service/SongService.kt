@@ -6,10 +6,8 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.os.Binder
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -18,7 +16,6 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.android.my_app_music.R
 import com.android.my_app_music.common.AppConstance
-import com.android.my_app_music.data.SongSharedPreference
 import com.android.my_app_music.data.model.Song
 import com.android.my_app_music.presentation.view.activity.PlaySongActivity
 import java.io.IOException
@@ -35,7 +32,6 @@ class SongService : Service() {
     private var isPlaying: Boolean = false
     private var isDataFromActivity = false
     private var song: Song = Song()
-    private val binder = LocalBinder()
     private var isRepeatSong = false
     private var isShuffleSong = false
     private var isClickItem = false
@@ -50,18 +46,11 @@ class SongService : Service() {
         const val ACTION_PREV = 3
         const val ACTION_NEXT = 4
         const val ACTION_CLEAR = 5
-        const val ACTION_SEEK_TO = 6
-        const val ACTION_CHANGE_SONG = 7
-    }
-
-    inner class LocalBinder : Binder() {
-        fun getService(): SongService {
-            return this@SongService
-        }
+        const val ACTION_CHANGE_SONG = 6
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        return binder
+        return null
     }
 
     override fun onCreate() {
@@ -73,7 +62,7 @@ class SongService : Service() {
 
         if (intent != null) {
             isClickItem = intent.getBooleanExtra(AppConstance.CHECK_CLICK_ITEM, false)
-            if (!isDataFromActivity) {
+            if (intent.hasExtra(AppConstance.LIST_SONG_KEY)) {
                 position = intent.getIntExtra(AppConstance.POSITION_SONG_KEY, 0)
                 listSongs =
                     intent.getParcelableArrayListExtra(AppConstance.LIST_SONG_KEY) ?: arrayListOf()
@@ -83,13 +72,9 @@ class SongService : Service() {
                 }
 
                 playSong(song.songUrl ?: "")
-                isDataFromActivity = true
                 isChangeSong = true
                 isPlaying = true
             }
-
-
-
 
             if (intent.hasExtra(AppConstance.CHECK_IS_REPEAT)) {
                 isRepeatSong = intent.getBooleanExtra(AppConstance.CHECK_IS_REPEAT, false)
@@ -98,9 +83,6 @@ class SongService : Service() {
             if (intent.hasExtra(AppConstance.CHECK_IS_SHUFFLE)) {
                 isShuffleSong = intent.getBooleanExtra(AppConstance.CHECK_IS_SHUFFLE, false)
             }
-
-            Log.d("BBB", isRepeatSong.toString())
-
 
             if (intent.hasExtra(AppConstance.UPDATE_SEEK_TO)) {
                 currentPosition = intent.getIntExtra(AppConstance.UPDATE_SEEK_TO, 0)
@@ -128,11 +110,11 @@ class SongService : Service() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         if (mediaPlayer != null) {
             mediaPlayer?.release()
             mediaPlayer = null
         }
+        super.onDestroy()
     }
 
     private fun updateCurrentPosition() {
@@ -240,23 +222,20 @@ class SongService : Service() {
             mediaPlayer?.reset()
             mediaPlayer?.setDataSource(url)
             mediaPlayer?.prepare()
-            mediaPlayer?.setOnPreparedListener {
-                mediaPlayer?.start()
-                isPlaying = true
-            }
+            mediaPlayer?.start()
+            isPlaying = true
             mediaPlayer?.setOnCompletionListener {
                 if (isRepeatSong) {
-                    Log.d("BBB", "repeat")
                     mediaPlayer?.seekTo(0)
                     mediaPlayer?.start()
                 } else {
                     if (isShuffleSong) {
                         position = Random.nextInt(listSongs.size)
+                        createNotification()
                         playSong(listSongs[position].songUrl ?: "")
-                        Log.d("BBB", "isShuffleSong")
                     } else {
                         nextSong()
-                        Log.d("BBB", "nextSong")
+                        createNotification()
                     }
                     val intentReceiver = Intent(this, DataChangeReceiver::class.java)
                     intentReceiver.putExtra(AppConstance.CHANGE_POSITION_FROM_SERVICE, position)
@@ -306,19 +285,7 @@ class SongService : Service() {
             ACTION_CHANGE_SONG -> {
                 changeSong()
             }
-
-            ACTION_SEEK_TO -> {
-                updateSeekTo()
-            }
         }
-    }
-
-    private fun updateSeekTo() {
-//        mediaPlayer?.seekTo(currentPosition)
-//        val intent = Intent(this@SongService, DataChangeReceiver::class.java)
-//        intent.putExtra(AppConstance.DURATION_POSITION, mediaPlayer?.duration)
-//        sendBroadcast(intent)
-
     }
 
     private fun prevSong() {
@@ -353,20 +320,6 @@ class SongService : Service() {
             isPlaying = false
         }
     }
-
-//    private val updateRunnable = object : Runnable {
-//        override fun run() {
-//            sendCurrentPosition(currentPosition)
-//            handler.postDelayed(this, 1000L)
-//        }
-//    }
-
-    private fun sendCurrentPosition(currentPosition: Int) {
-        val intentReceiver = Intent(this, DataChangeReceiver::class.java)
-        intentReceiver.putExtra(AppConstance.CURRENT_POSITION, currentPosition)
-        sendBroadcast(intentReceiver)
-    }
-
 
     private fun changeSong() {
         if (mediaPlayer != null && isPlaying) {

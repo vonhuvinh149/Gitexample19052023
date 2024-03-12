@@ -2,23 +2,18 @@ package com.android.my_app_music.presentation.view.fragment
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ViewFlipper
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.android.my_app_music.R
 import com.android.my_app_music.common.AppResource
-import com.android.my_app_music.data.model.Advertisement
 import com.android.my_app_music.presentation.view.adapter.BannerAdapter
 import com.android.my_app_music.presentation.viewmodel.AdvertisementViewModel
 import me.relex.circleindicator.CircleIndicator
-import kotlin.properties.Delegates
-
 
 class BannerFragment : Fragment() {
 

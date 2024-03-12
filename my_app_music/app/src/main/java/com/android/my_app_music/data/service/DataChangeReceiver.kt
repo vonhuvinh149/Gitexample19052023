@@ -13,7 +13,7 @@ class DataChangeReceiver : BroadcastReceiver() {
             val isPlay = intent.getBooleanExtra(AppConstance.CHECK_IS_PLAY, false)
             val duration = intent.getIntExtra(AppConstance.DURATION_POSITION, 0)
 
-            val mIntent = Intent("YOUR_ACTION_NAME")
+            val mIntent = Intent("ACTION_CHECK")
             mIntent.putExtra(AppConstance.CHANGE_POSITION_FROM_SERVICE, position)
             mIntent.putExtra(AppConstance.CHECK_IS_PLAY, isPlay)
             mIntent.putExtra(AppConstance.DURATION_POSITION, duration)

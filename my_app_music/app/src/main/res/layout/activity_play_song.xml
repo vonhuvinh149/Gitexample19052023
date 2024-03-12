@@ -2,19 +2,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relative_play_song"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/custom_background"
     android:orientation="vertical"
-    android:padding="8dp"
     tools:context=".presentation.view.activity.PlaySongActivity">
 
+    <ImageView
+        android:id="@+id/img_background_play_song"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/img_2" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha=".6"
+        android:background="@color/smoke" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_play_song"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        app:drawableTint="@color/white">
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -23,26 +37,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/linear_seekbar"
-        android:layout_below="@+id/toolbar_play_song">
+        android:layout_below="@+id/toolbar_play_song"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="13dp"
+        android:padding="5dp" />
 
-    </androidx.viewpager.widget.ViewPager>
+    <me.relex.circleindicator.CircleIndicator
+        android:id="@+id/img_circle_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="10dp"
+        android:layout_alignBottom="@+id/view_pager_play_song"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-10dp" />
 
-    <LinearLayout
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/linear_seekbar"
+        android:layout_alignParentBottom="true"
+        android:alpha=".5"
+        android:background="@color/black" />
+
+    <RelativeLayout
         android:id="@+id/linear_seekbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/linear_btn"
-        android:gravity="center"
         android:orientation="horizontal"
-        android:padding="8dp">
-
+        android:paddingStart="8dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="12dp">
 
         <TextView
             android:id="@+id/tv_time_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:gravity="start"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:text="00:00"
             android:textColor="@color/white"
             android:textSize="16sp"
@@ -50,74 +82,79 @@
 
         <SeekBar
             android:id="@+id/seekbar_play"
-            android:layout_width="wrap_content"
-            android:layout_height="8dp"
-            android:layout_weight="9"
-            android:progressDrawable="@drawable/custom_seekbar" />
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/tv_time_total"
+            android:layout_toEndOf="@+id/tv_time_play"
+            android:progressDrawable="@drawable/custom_seekbar"
+            android:thumb="@color/black" />
 
         <TextView
             android:id="@+id/tv_time_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight=".5"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:gravity="end"
             android:text="00:00"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/linear_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="15dp"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:weightSum="5">
 
         <ImageButton
             android:id="@+id/btn_suf"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="16dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="22dp"
             android:background="@null"
             android:scaleType="fitXY"
             android:src="@drawable/ic_suf" />
 
         <ImageButton
             android:id="@+id/btn_prev"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="16dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="22dp"
             android:background="@null"
             android:scaleType="fitXY"
             android:src="@drawable/ic_prev" />
 
         <ImageButton
             android:id="@+id/btn_play"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="16dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="22dp"
             android:background="@null"
             android:scaleType="fitXY"
             android:src="@drawable/ic_play" />
 
         <ImageButton
             android:id="@+id/btn_next"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="16dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="22dp"
             android:background="@null"
             android:scaleType="fitXY"
             android:src="@drawable/ic_next" />
 
         <ImageButton
             android:id="@+id/btn_repeat"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@null"
             android:scaleType="fitXY"
             android:src="@drawable/ic_repeat" />

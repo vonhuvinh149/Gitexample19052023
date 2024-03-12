@@ -32,7 +32,6 @@ class AlbumRepository {
     }
 
     fun getListSongAlbum(albumId: Int, callback: (MutableList<Song>) -> Unit) {
-        Log.d("BBB" , "id $albumId")
         var listSongs: MutableList<Song> = mutableListOf()
         dbRef.child("song").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

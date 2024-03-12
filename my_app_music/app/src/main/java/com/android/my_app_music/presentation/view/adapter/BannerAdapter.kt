@@ -1,7 +1,6 @@
 package com.android.my_app_music.presentation.view.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,13 +30,13 @@ class BannerAdapter(
 
         val imgBackgroundBanner: ImageView = view.findViewById(R.id.img_background_banner)
         val imgBanner: ImageView = view.findViewById(R.id.img_banner)
-        val tvTitleSong: TextView = view.findViewById(R.id.tv_title_song)
+        val tvTitle: TextView = view.findViewById(R.id.tv_title_banner)
         val tvContent: TextView = view.findViewById(R.id.tv_content)
 
         Picasso.get().load(lists[position].image).into(imgBackgroundBanner)
         Picasso.get().load(lists[position].image).into(imgBanner)
         tvContent.text = lists[position].content
-//        tvTitleSong.text = lists[position].content
+        tvTitle.text = lists[position].title
 
         container.addView(view)
         return view

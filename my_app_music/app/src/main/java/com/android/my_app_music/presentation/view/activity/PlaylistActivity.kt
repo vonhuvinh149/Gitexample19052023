@@ -64,6 +64,10 @@ class PlaylistActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        toolbar?.setNavigationOnClickListener {
+            finish()
+        }
     }
 
     private fun observerData() {

@@ -1,5 +1,6 @@
 package com.android.my_app_music.presentation.view.activity
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
@@ -19,7 +20,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var songViewModel: AdvertisementViewModel
 
 
-
     lateinit var db: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,13 +37,11 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun initView() {
-
         tabLayout = findViewById(R.id.myTabLayout)
         viewPager = findViewById(R.id.myViewPager)
-
         mainViewPagerAdapter = MainViewPagerAdapter(supportFragmentManager)
-        mainViewPagerAdapter.addFragment(HomeFragment(), "Trang chủ")
-        mainViewPagerAdapter.addFragment(SearchFragment(), "Tìm kiếm")
+        mainViewPagerAdapter.addFragment(HomeFragment())
+        mainViewPagerAdapter.addFragment(SearchFragment())
         viewPager.adapter = mainViewPagerAdapter
         tabLayout?.setupWithViewPager(viewPager)
         tabLayout?.getTabAt(0)?.setIcon(R.drawable.ic_home)

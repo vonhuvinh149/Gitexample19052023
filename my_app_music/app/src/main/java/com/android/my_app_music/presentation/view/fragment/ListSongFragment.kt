@@ -2,7 +2,6 @@ package com.android.my_app_music.presentation.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,17 +11,17 @@ import com.android.my_app_music.R
 import com.android.my_app_music.common.AppConstance
 import com.android.my_app_music.data.model.Song
 import com.android.my_app_music.data.service.SongService
-import com.android.my_app_music.presentation.view.activity.PlaySongActivity
 import com.android.my_app_music.presentation.view.adapter.SongAdapter
 import com.android.my_app_music.utils.OnClickItem
 
-class ListSongFragment(private val position: Int, private val listSongs: MutableList<Song>) :
-    Fragment() {
+class ListSongFragment(
+    private val position: Int,
+    private val listSongs: MutableList<Song>
+) : Fragment() {
 
     private var view: View? = null
     private var recyclerView: RecyclerView? = null
     private lateinit var songAdapter: SongAdapter
-    val playSongActivity = PlaySongActivity()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,8 +39,8 @@ class ListSongFragment(private val position: Int, private val listSongs: Mutable
         songAdapter.onClickItem(object : OnClickItem {
             override fun onClick(position: Int) {
                 val intent = Intent(requireContext(), SongService::class.java)
-                intent.putExtra(AppConstance.POSITION_SONG_KEY , position)
-                intent.putExtra(AppConstance.ACTION_RECEIVER_KEY , SongService.ACTION_CHANGE_SONG)
+                intent.putExtra(AppConstance.POSITION_SONG_KEY, position)
+                intent.putExtra(AppConstance.ACTION_RECEIVER_KEY, SongService.ACTION_CHANGE_SONG)
                 requireContext().startService(intent)
             }
         })

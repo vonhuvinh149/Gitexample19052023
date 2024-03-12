@@ -22,62 +22,83 @@ class TestActivity : AppCompatActivity() {
         val database = Firebase.database
         val myRef = database.getReference("music")
 
-
-        val album1 = Album(
-            1,
-            "Note Buồn Trên Cát",
-            "Khói",
-            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/image%2F1_notebuontrencat.jpg?alt=media&token=e20ca6e5-bca2-45f8-a797-c95d41ac7f2b"
-        )
-
-        val album2 = Album(
-            2,
-            "Loser2Lover",
-            "Bray",
-            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/image%2F2_Loser2Lover.jpg?alt=media&token=53375617-89e4-4ab4-a988-389bd1056bdc"
-        )
-
-        val album3 = Album(
-            3,
-            "Đan Xinh In Love",
-            "Binz",
-            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/image%2F3_danxininlove.jpg?alt=media&token=a5031e2c-d41c-4bd0-b38e-0f3e6eac047a"
-        )
-
-        val album4 = Album(
+        val song = Song(
+            22,
+            "Ngày lang thang",
+            "Đen , JGKID , Dr.Quang",
+            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/image%2Fngaylangthan.jpg?alt=media&token=6e9a5e5d-a10b-4021-a4aa-b45f1c511860",
+            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/music%2FNgay-Lang-Thang-Den-ft-JGKiD-ft-Dr-Quang.mp3?alt=media&token=fa272f02-ac7b-4c69-8eeb-1ea51672a8f6",
             4,
-            "KoBuKoVu",
-            "Đen Vâu",
-            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/image%2F4_kobukovu.jpg?alt=media&token=3a002cf4-f204-4c1c-990e-0c3ce55ce668"
+            3,
+            0,
+            false
         )
 
-        val album5 = Album(
-            5 ,
-            "Đĩa Than" ,
-            "Táo",
-            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/image%2F5_diathantao.jpg?alt=media&token=2a750bb1-2932-4a12-874b-104d3065bc27"
+        val song1 = Song(
+            23,
+            "Lối nhỏ",
+            "Đen , Phương Anh Đào",
+            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/image%2Floinho.jpg?alt=media&token=70e57d8c-edde-4732-a272-b033e436c0c8",
+            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/music%2FLoi-Nho-Den-Phuong-Anh-Dao.mp3?alt=media&token=662ee4d8-4aca-4d03-aedf-7749ba35c0bc",
+            4,
+            2,
+            0,
+            false
         )
 
-        val album6 = Album(
-            6 ,
-            "DRUNK ON MUSIC",
-        "Đạt G",
-            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/image%2F6_drunonmusic.jpg?alt=media&token=fa846b52-0406-4e8f-85d1-fd101d04c3fb"
+        val song2 = Song(
+            24,
+            "Gieo Quẻ",
+            "Đen , Hoàng Thuỳ Linh",
+            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/image%2Fgieoque.jpg?alt=media&token=352f9828-f674-49fb-9334-1209769a9a4b",
+            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/music%2FGieoQue-HoangThuyLinhFeatDen-7702264.mp3?alt=media&token=3802a120-6358-468e-9e50-f88f0c90d8eb",
+            4,
+            1,
+            0,
+            false
         )
 
-        val album7 = Album(
-            7 ,
-            "Không Tựa" ,
-            "Karik" ,
-            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/image%2F7_khongtua.jpg?alt=media&token=7519dc72-2e72-43ef-915d-c288f2c742e9"
+        val song4 = Song(
+            25,
+            "Luôn yêu đời",
+            "Đen , Cheng",
+            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/image%2Fluonyeudoi.jpg?alt=media&token=edf755c9-4bde-49f0-b1f4-68922fdfb33d",
+            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/music%2FLuonYeuDoi-Den-8924307.mp3?alt=media&token=6dd9a78e-ac41-4584-a233-d9879f74df52",
+            4,
+            3,
+            0,
+            false
         )
 
-        myRef.child("albums").push().setValue(album1)
-        myRef.child("albums").push().setValue(album2)
-        myRef.child("albums").push().setValue(album3)
-        myRef.child("albums").push().setValue(album4)
-        myRef.child("albums").push().setValue(album5)
-        myRef.child("albums").push().setValue(album6)
-        myRef.child("albums").push().setValue(album7)
+        val song3 = Song(
+            26,
+            "Ngày khác lạ",
+            "Đen , Giang Phạm , TripleD",
+            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/image%2Fngaykhacla.jpg?alt=media&token=a4212f4d-c265-4a7a-967b-b580db311b12",
+            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/music%2FNgayKhacLa-DenDJGiangPhamTripleD-5393909.mp3?alt=media&token=22f3fc13-0027-4b8b-8419-7e96330db225",
+            4,
+            2,
+            0,
+            false
+        )
+
+        val song5 = Song(
+            27,
+            "Nhạc của rừng",
+            "Đen , Hiền VK",
+            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/image%2Fnhaccuarung.jpg?alt=media&token=37fe051e-3c9a-446c-90ac-31386e64ffda",
+            "https://firebasestorage.googleapis.com/v0/b/db-app-music.appspot.com/o/music%2FNhacCuaRung-DenHienVK-13940254.mp3?alt=media&token=1764102b-216a-4029-8213-ee8b78bb628b",
+            4,
+            1,
+            0,
+            false
+        )
+
+        myRef.child("song").push().setValue(song)
+        myRef.child("song").push().setValue(song1)
+        myRef.child("song").push().setValue(song2)
+        myRef.child("song").push().setValue(song3)
+        myRef.child("song").push().setValue(song4)
+        myRef.child("song").push().setValue(song5)
     }
 }

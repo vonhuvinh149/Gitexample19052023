@@ -7,9 +7,8 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +22,8 @@ import com.android.my_app_music.data.service.SongService
 import com.android.my_app_music.presentation.view.adapter.ViewPagerPlaySongAdapter
 import com.android.my_app_music.presentation.view.fragment.ListSongFragment
 import com.android.my_app_music.presentation.view.fragment.MusicDiscFragment
-import com.android.my_app_music.utils.DataChangeFromServiceListener
+import com.squareup.picasso.Picasso
+import me.relex.circleindicator.CircleIndicator
 import java.util.concurrent.TimeUnit
 
 class PlaySongActivity : AppCompatActivity() {
@@ -38,15 +38,15 @@ class PlaySongActivity : AppCompatActivity() {
     private var btnShuffle: ImageButton? = null
     private var btnRepeat: ImageButton? = null
     private var btnPlay: ImageButton? = null
-    private val handler = Handler()
+    private var imgCircleIndicator: CircleIndicator? = null
     private var isCheckRepeat: Boolean = false
     private var isCheckShuffle: Boolean = false
     private var isPlaying: Boolean = false
     private lateinit var musicDiscFragment: MusicDiscFragment
+    private var imgBackground: ImageView? = null
 
     private lateinit var viewPagerPlaySongAdapter: ViewPagerPlaySongAdapter
     private lateinit var songService: SongService
-    private var isBoundService: Boolean = false
     private var duration = 0
     private var currentPosition = 0
 
@@ -64,6 +64,7 @@ class PlaySongActivity : AppCompatActivity() {
         initView()
         getDataFromIntent()
         musicDiscFragment = MusicDiscFragment(position, listSongs)
+        Picasso.get().load(listSongs[position].imageSong).into(imgBackground)
         createViewPager()
 
         val intent = Intent(this@PlaySongActivity, SongService::class.java)
@@ -73,7 +74,7 @@ class PlaySongActivity : AppCompatActivity() {
         intent.putExtra(AppConstance.CHECK_IS_SHUFFLE, isCheckShuffle)
         startService(intent)
 
-        val filter = IntentFilter("YOUR_ACTION_NAME")
+        val filter = IntentFilter("ACTION_CHECK")
         registerReceiver(broadcastReceiver, filter)
 
         val currentPosition = IntentFilter("CURRENT_POSITION")
@@ -89,6 +90,7 @@ class PlaySongActivity : AppCompatActivity() {
 
         viewPager.adapter = viewPagerPlaySongAdapter
         viewPager.currentItem = 1
+        imgCircleIndicator?.setViewPager(viewPager)
     }
 
     private fun getDataFromIntent() {
@@ -104,14 +106,15 @@ class PlaySongActivity : AppCompatActivity() {
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent != null) {
-                if (intent.action == "YOUR_ACTION_NAME") {
-                    val position = intent.getIntExtra(AppConstance.CHANGE_POSITION_FROM_SERVICE, 0)
+                if (intent.action == "ACTION_CHECK") {
+                    val positionListener = intent.getIntExtra(AppConstance.CHANGE_POSITION_FROM_SERVICE, 0)
                     duration = intent.getIntExtra(AppConstance.DURATION_POSITION, 0)
                     isPlaying = intent.getBooleanExtra(AppConstance.CHECK_IS_PLAY, false)
-                    updateView()
+                    updateButtonPlay()
                     setupSeekbar(duration)
+                    updateBackground(positionListener)
                     updateTimeDuration(duration)
-                    musicDiscFragment.updateView(position)
+                    musicDiscFragment.updateView(positionListener)
                 }
             }
         }
@@ -127,13 +130,17 @@ class PlaySongActivity : AppCompatActivity() {
 
     }
 
+    private fun updateBackground(positionListener : Int){
+        Picasso.get().load(listSongs[positionListener].imageSong).into(imgBackground)
+    }
+
     private fun updateCurrentPosition(currentPosition: Int) {
         val formatCurrentPosition = formatTimeMediaPlayer(currentPosition)
         tvTime?.text = formatCurrentPosition
         seekBar?.progress = currentPosition
     }
 
-    fun updateView() {
+    fun updateButtonPlay() {
         if (isPlaying) {
             btnPlay?.setImageResource(R.drawable.ic_pause)
         } else {
@@ -223,6 +230,7 @@ class PlaySongActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         unregisterReceiver(broadcastReceiver)
+        unregisterReceiver(currentPositionReceiver)
         super.onDestroy()
     }
 
@@ -244,10 +252,13 @@ class PlaySongActivity : AppCompatActivity() {
         btnNext = findViewById(R.id.btn_next)
         btnShuffle = findViewById(R.id.btn_suf)
         btnRepeat = findViewById(R.id.btn_repeat)
+        imgCircleIndicator = findViewById(R.id.img_circle_tab)
         btnPlay = findViewById(R.id.btn_play)
         mediaPlayer = MediaPlayer()
         songService = SongService()
+        imgBackground = findViewById(R.id.img_background_play_song)
         songSharedPreference = SongSharedPreference(this)
+
 
         isCheckRepeat = songSharedPreference.getIsRepeat()
         isCheckShuffle = songSharedPreference.getIsShuffle()

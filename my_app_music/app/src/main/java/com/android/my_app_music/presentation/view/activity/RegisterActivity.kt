@@ -15,7 +15,6 @@ import com.android.my_app_music.common.Validation
 import com.android.my_app_music.utils.SpannedUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class RegisterActivity : AppCompatActivity() {

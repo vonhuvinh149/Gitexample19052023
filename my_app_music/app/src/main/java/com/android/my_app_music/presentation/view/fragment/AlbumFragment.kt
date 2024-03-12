@@ -3,11 +3,10 @@ package com.android.my_app_music.presentation.view.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +15,6 @@ import com.android.my_app_music.common.AppConstance
 import com.android.my_app_music.common.AppResource
 import com.android.my_app_music.data.model.Album
 import com.android.my_app_music.presentation.view.activity.AlbumActivity
-import com.android.my_app_music.presentation.view.activity.PlaylistActivity
 import com.android.my_app_music.presentation.view.adapter.AlbumAdapter
 import com.android.my_app_music.presentation.viewmodel.AlbumViewModel
 import com.android.my_app_music.utils.OnClickItem

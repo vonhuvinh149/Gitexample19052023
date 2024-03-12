@@ -5,14 +5,14 @@
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
     android:gravity="center"
-    android:padding="1dp">
+    android:padding="2dp">
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignBottom="@+id/relative_item_song"
         android:layout_alignParentTop="true"
-        android:alpha=".2"
+        android:alpha=".4"
         android:background="@color/black" />
 
     <RelativeLayout

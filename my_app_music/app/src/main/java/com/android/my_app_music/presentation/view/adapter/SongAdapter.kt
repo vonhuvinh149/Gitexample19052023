@@ -15,7 +15,8 @@ import com.squareup.picasso.Picasso
 class SongAdapter : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
 
     private var listSongs: MutableList<Song> = mutableListOf()
-    private var onClickItem : OnClickItem? = null
+    private var onClickItem: OnClickItem? = null
+    private var index = 0
 
     fun updateData(lists: MutableList<Song>) {
         if (listSongs.size > 0) {
@@ -30,10 +31,10 @@ class SongAdapter : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
         private val imgSong: ImageView = view.findViewById(R.id.img_song_item)
         private val tvSongName: TextView = view.findViewById(R.id.tv_song_name_item)
         private val tvSinger: TextView = view.findViewById(R.id.tv_singer_item)
-        private val icPlay : ImageView = view.findViewById(R.id.ic_play_song_item)
-        private var btnSongItem : RelativeLayout = view.findViewById(R.id.relative_song_item)
+        private val icPlay: ImageView = view.findViewById(R.id.ic_play_song_item)
+        private var btnSongItem: RelativeLayout = view.findViewById(R.id.relative_song_item)
 
-        fun bind(song: Song) {
+        fun bind(song: Song, index: Int) {
             tvSongName.text = song.songName
             tvSinger.text = song.singerName
             Picasso.get().load(song.imageSong).into(imgSong)
@@ -43,6 +44,7 @@ class SongAdapter : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
             btnSongItem.setOnClickListener {
                 onClickItem?.onClick(adapterPosition)
             }
+
         }
     }
 
@@ -55,10 +57,11 @@ class SongAdapter : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
     override fun getItemCount() = listSongs.size
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-        holder.bind(listSongs[position])
+        holder.bind(listSongs[position], index)
     }
 
-    fun onClickItem(onClickItem: OnClickItem){
+    fun onClickItem(onClickItem: OnClickItem) {
         this.onClickItem = onClickItem
     }
+
 }
