@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/custom_background"
+    android:id="@+id/linear_search"
     android:orientation="vertical"
     tools:context=".presentation.view.activity.MainActivity">
 

@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:text="Bray"
-        android:textColor="@color/smoke"
+        android:textColor="@color/white_100"
         android:textSize="12sp" />
 
 </LinearLayout>

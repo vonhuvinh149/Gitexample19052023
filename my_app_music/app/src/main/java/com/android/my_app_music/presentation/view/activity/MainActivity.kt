@@ -1,8 +1,13 @@
 package com.android.my_app_music.presentation.view.activity
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import com.android.my_app_music.R
 import com.android.my_app_music.presentation.view.adapter.MainViewPagerAdapter
@@ -17,10 +22,6 @@ class MainActivity : AppCompatActivity() {
     private var tabLayout: TabLayout? = null
     private lateinit var viewPager: ViewPager
     private lateinit var mainViewPagerAdapter: MainViewPagerAdapter
-    private lateinit var songViewModel: AdvertisementViewModel
-
-
-    lateinit var db: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,13 +29,8 @@ class MainActivity : AppCompatActivity() {
 
 
         initView()
-        observerData()
-    }
-
-    private fun observerData() {
 
     }
-
 
     private fun initView() {
         tabLayout = findViewById(R.id.myTabLayout)
