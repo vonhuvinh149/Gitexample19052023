@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -39,6 +40,7 @@ class SearchFragment : Fragment() {
     private var recyclerView: RecyclerView? = null
     private lateinit var songAdapter: SongAdapter
     private var listSongs: MutableList<Song> = mutableListOf()
+    private var tvNotFound: TextView? = null
 
     private var edtSearch: EditText? = null
     override fun onCreateView(
@@ -64,9 +66,15 @@ class SearchFragment : Fragment() {
             when (it) {
                 is AppResource.Success -> {
                     listSongs = it.data ?: mutableListOf()
-                    Log.d("BBB", listSongs.toString())
+
                     songAdapter.updateData(listSongs)
                     recyclerView?.adapter = songAdapter
+
+                    if (listSongs.size <= 0) {
+                        tvNotFound?.visibility = View.VISIBLE
+                    } else {
+                        tvNotFound?.visibility = View.GONE
+                    }
                 }
 
                 is AppResource.Error -> {
@@ -121,7 +129,7 @@ class SearchFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {
                 val str = s.toString()
-                if (str.isNotEmpty()) {
+                if (str.isNotBlank()) {
                     songViewModel.executeSearchSong(str)
                 }
             }
@@ -131,7 +139,10 @@ class SearchFragment : Fragment() {
 
     private fun performSearch() {
         val str = edtSearch?.text.toString()
-        songViewModel.executeSearchSong(str)
+        if (str.isNotBlank()) {
+            songViewModel.executeSearchSong(str)
+            edtSearch?.error = "input please"
+        }
         hideKeyboard()
     }
 
@@ -148,6 +159,7 @@ class SearchFragment : Fragment() {
         songAdapter = SongAdapter()
         recyclerView?.setHasFixedSize(false)
         edtSearch = view.findViewById(R.id.edt_search_name)
+        tvNotFound = view.findViewById(R.id.tv_not_found)
     }
 
 }

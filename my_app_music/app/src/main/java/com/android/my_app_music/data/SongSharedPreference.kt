@@ -1,6 +1,7 @@
 package com.android.my_app_music.data
 
 import android.content.Context
+import com.android.my_app_music.data.model.Song
 
 class SongSharedPreference(context: Context) {
     private val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
@@ -25,4 +26,5 @@ class SongSharedPreference(context: Context) {
     fun getIsShuffle(): Boolean {
         return sharedPreferences.getBoolean("shuffle-key", false)
     }
+
 }

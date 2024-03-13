@@ -7,9 +7,10 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
+import java.text.Collator
 import java.text.Normalizer
+import java.util.Locale
 import java.util.regex.Pattern
 
 class SongRepository {
@@ -41,12 +42,17 @@ class SongRepository {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     for (e in snapshot.children) {
-                        val item = e.getValue(Song::class.java)
-                        val songName = removeDiacritics(item?.songName ?: "")
-                        val singerName: String =
-                            removeDiacritics(item?.singerName ?: "")
-                        val str = removeDiacritics(searchValue)
-                        if (singerName.contains(str, ignoreCase = true) || songName.contains(str , ignoreCase = true)) {
+                        var item = e.getValue(Song::class.java)
+                        var songName = convertString(item?.songName ?: "")
+                        var singerName = convertString(item?.singerName ?: "")
+                        var str = convertString(searchValue)
+
+                        songName = removeDiacritics(songName)
+                        singerName = removeDiacritics(singerName)
+                        str = removeDiacritics(str)
+                        if (singerName.contains(str, ignoreCase = true) ||
+                            songName.contains(str, ignoreCase = true)
+                        ) {
                             item?.let { listSongs.add(it) }
                         }
                     }
@@ -60,10 +66,17 @@ class SongRepository {
         })
     }
 
-    private fun removeDiacritics(input: String): String {
-        val normalized = Normalizer.normalize(input, Normalizer.Form.NFD)
+    private fun removeDiacritics(str: String): String {
+        val normalized = Normalizer.normalize(str, Normalizer.Form.NFD)
         val pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+")
         return pattern.matcher(normalized).replaceAll("")
     }
 
+    private fun convertString(str: String): String {
+        var newStr = str.lowercase().replace("đ", "d")
+        newStr = newStr.lowercase().replace("ư", "u")
+        newStr = newStr.lowercase().replace("ơ", "o")
+        newStr = newStr.lowercase().replace("ô", "o")
+        return newStr
+    }
 }

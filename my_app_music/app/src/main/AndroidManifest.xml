@@ -30,7 +30,9 @@
             android:exported="false" />
         <activity
             android:name=".TestActivity"
-            android:exported="false"></activity>
+            android:exported="false">
+
+        </activity>
         <activity
             android:name=".presentation.view.activity.PlaylistActivity"
             android:exported="false" />
@@ -52,17 +54,18 @@
             android:enabled="true" />
 
         <receiver
-            android:name=".data.service.NotificationReceiver"
+            android:name=".data.receiver.NotificationReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name=".data.service.DataChangeReceiver"
+            android:name=".data.receiver.DataChangeReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name=".data.service.CurrentPositionReceiver"
+            android:name=".data.receiver.CurrentPositionReceiver"
             android:enabled="true"
             android:exported="false" />
+
     </application>
 
 </manifest>

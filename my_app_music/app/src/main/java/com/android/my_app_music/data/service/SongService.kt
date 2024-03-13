@@ -16,7 +16,11 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.android.my_app_music.R
 import com.android.my_app_music.common.AppConstance
+import com.android.my_app_music.data.SongSharedPreference
 import com.android.my_app_music.data.model.Song
+import com.android.my_app_music.data.receiver.CurrentPositionReceiver
+import com.android.my_app_music.data.receiver.DataChangeReceiver
+import com.android.my_app_music.data.receiver.NotificationReceiver
 import com.android.my_app_music.presentation.view.activity.PlaySongActivity
 import java.io.IOException
 import kotlin.random.Random
@@ -24,7 +28,7 @@ import kotlin.random.Random
 class SongService : Service() {
 
     private val CHANEL_ID = "my-chanel"
-
+    private lateinit var songSharedPreference: SongSharedPreference
     private var mediaPlayer: MediaPlayer? = null
     private lateinit var notificationManager: NotificationManager
     private var position: Int = 0
@@ -56,6 +60,7 @@ class SongService : Service() {
     override fun onCreate() {
         super.onCreate()
         mediaPlayer = MediaPlayer()
+        songSharedPreference = SongSharedPreference(this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -129,7 +134,6 @@ class SongService : Service() {
         }, 1000)
     }
 
-
     private fun setupRemoteView(): RemoteViews {
 
         val remoteView = RemoteViews(packageName, R.layout.layout_custom_notification)
@@ -176,6 +180,9 @@ class SongService : Service() {
         val intent = Intent(this@SongService, PlaySongActivity::class.java)
         intent.putExtra(AppConstance.POSITION_SONG_KEY, position)
         intent.putExtra(AppConstance.LIST_SONG_KEY, ArrayList(listSongs))
+        intent.putExtra("pending", true)
+        intent.putExtra(AppConstance.CHECK_IS_PLAY, isPlaying)
+        intent.putExtra(AppConstance.DURATION_POSITION, mediaPlayer?.duration)
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,

@@ -1,4 +1,4 @@
-package com.android.my_app_music.data.service
+package com.android.my_app_music.data.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context

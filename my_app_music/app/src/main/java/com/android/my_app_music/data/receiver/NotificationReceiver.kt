@@ -1,9 +1,10 @@
-package com.android.my_app_music.data.service
+package com.android.my_app_music.data.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.android.my_app_music.common.AppConstance
+import com.android.my_app_music.data.service.SongService
 
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {

@@ -45,14 +45,4 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/layout_item_list_song" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_margin="10dp"
-        android:id="@+id/btn_play_all_albums"
-        android:src="@drawable/ic_play_playlist"
-        app:civ_border_color="@color/white"
-        app:civ_border_width="2dp"
-        app:layout_anchor="@id/appBarLayout"
-        app:layout_anchorGravity="bottom|center" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

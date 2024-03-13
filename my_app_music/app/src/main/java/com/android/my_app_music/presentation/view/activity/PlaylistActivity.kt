@@ -25,7 +25,6 @@ class PlaylistActivity : AppCompatActivity() {
     private lateinit var playlistViewModel: PlaylistViewModel
     private var recyclerView: RecyclerView? = null
     private lateinit var songAdapter: SongAdapter
-    private var btnPlayAll: CircleImageView? = null
     private var imgBackground: ImageView? = null
     private var tvTitle: TextView? = null
     private var listSongs: MutableList<Song> = mutableListOf()
@@ -56,14 +55,6 @@ class PlaylistActivity : AppCompatActivity() {
                 finish()
             }
         })
-
-        btnPlayAll?.setOnClickListener {
-            val intent = Intent(this@PlaylistActivity, PlaySongActivity::class.java)
-            intent.putExtra(AppConstance.POSITION_SONG_KEY, 0)
-            intent.putExtra(AppConstance.LIST_SONG_KEY, ArrayList(listSongs))
-            startActivity(intent)
-            finish()
-        }
 
         toolbar?.setNavigationOnClickListener {
             finish()
@@ -100,7 +91,6 @@ class PlaylistActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        btnPlayAll = findViewById(R.id.btn_play_all_playlist)
         imgBackground = findViewById(R.id.img_background_playlist)
         tvTitle = findViewById(R.id.tv_title_playlist_song)
         recyclerView = findViewById(R.id.recycler_view_song_playlist)

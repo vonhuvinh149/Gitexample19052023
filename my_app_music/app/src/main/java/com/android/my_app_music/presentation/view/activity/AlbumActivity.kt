@@ -26,7 +26,6 @@ class AlbumActivity : AppCompatActivity() {
     private var appBarLayout: AppBarLayout? = null
     private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
     private var toolbar: Toolbar? = null
-    private var btnPlayAll: CircleImageView? = null
     private var recyclerView: RecyclerView? = null
     private lateinit var songAdapter: SongAdapter
     private var imgAlbum: ImageView? = null
@@ -57,16 +56,9 @@ class AlbumActivity : AppCompatActivity() {
             }
         })
 
-        btnPlayAll?.setOnClickListener {
-            val intent = Intent(this@AlbumActivity, PlaySongActivity::class.java)
-            intent.putExtra(AppConstance.POSITION_SONG_KEY, 0)
-            intent.putExtra(AppConstance.LIST_SONG_KEY, ArrayList(listSongs))
-            startActivity(intent)
-            finish()
-        }
-
         toolbar?.setNavigationOnClickListener {
-            finish()
+            val intent = Intent(this@AlbumActivity, MainActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -89,6 +81,7 @@ class AlbumActivity : AppCompatActivity() {
                 is AppResource.Error -> {
                     Log.e("BBB", it.message.toString())
                 }
+                else -> {}
             }
         }
         albumViewModel?.executeGetListSongAlbum(albumId)
@@ -99,7 +92,6 @@ class AlbumActivity : AppCompatActivity() {
         appBarLayout = findViewById(R.id.appBarLayout)
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout)
         toolbar = findViewById(R.id.toolbar_album)
-        btnPlayAll = findViewById(R.id.btn_play_all_albums)
         recyclerView = findViewById(R.id.recycler_view_album_song)
         recyclerView?.setHasFixedSize(true)
         songAdapter = SongAdapter()

@@ -7,15 +7,18 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.MutableLiveData
 import androidx.viewpager.widget.ViewPager
 import com.android.my_app_music.R
 import com.android.my_app_music.common.AppConstance
+import com.android.my_app_music.common.AppResource
 import com.android.my_app_music.data.SongSharedPreference
 import com.android.my_app_music.data.model.Song
 import com.android.my_app_music.data.service.SongService
@@ -44,7 +47,7 @@ class PlaySongActivity : AppCompatActivity() {
     private var isPlaying: Boolean = false
     private lateinit var musicDiscFragment: MusicDiscFragment
     private var imgBackground: ImageView? = null
-
+    private var isClickPending = false
     private lateinit var viewPagerPlaySongAdapter: ViewPagerPlaySongAdapter
     private lateinit var songService: SongService
     private var duration = 0
@@ -55,7 +58,6 @@ class PlaySongActivity : AppCompatActivity() {
     private var listSongs: ArrayList<Song> = arrayListOf()
     private lateinit var songSharedPreference: SongSharedPreference
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -63,16 +65,24 @@ class PlaySongActivity : AppCompatActivity() {
 
         initView()
         getDataFromIntent()
+
         musicDiscFragment = MusicDiscFragment(position, listSongs)
+
+        if (!isClickPending) {
+            val intent = Intent(this@PlaySongActivity, SongService::class.java)
+            intent.putExtra(AppConstance.POSITION_SONG_KEY, position)
+            intent.putExtra(AppConstance.LIST_SONG_KEY, listSongs)
+            intent.putExtra(AppConstance.CHECK_IS_REPEAT, isCheckRepeat)
+            intent.putExtra(AppConstance.CHECK_IS_SHUFFLE, isCheckShuffle)
+            startService(intent)
+        }
+
+        updateButtonPlay()
+        updateTimeDuration(duration)
+
         Picasso.get().load(listSongs[position].imageSong).into(imgBackground)
         createViewPager()
 
-        val intent = Intent(this@PlaySongActivity, SongService::class.java)
-        intent.putExtra(AppConstance.POSITION_SONG_KEY, position)
-        intent.putExtra(AppConstance.LIST_SONG_KEY, listSongs)
-        intent.putExtra(AppConstance.CHECK_IS_REPEAT, isCheckRepeat)
-        intent.putExtra(AppConstance.CHECK_IS_SHUFFLE, isCheckShuffle)
-        startService(intent)
 
         val filter = IntentFilter("ACTION_CHECK")
         registerReceiver(broadcastReceiver, filter)
@@ -95,10 +105,22 @@ class PlaySongActivity : AppCompatActivity() {
 
     private fun getDataFromIntent() {
         if (intent != null) {
-            position = intent.getIntExtra(AppConstance.POSITION_SONG_KEY, 0)
+            if (intent.hasExtra(AppConstance.POSITION_SONG_KEY)) {
+                position = intent.getIntExtra(AppConstance.POSITION_SONG_KEY, 0)
+                Log.d("BBB", position.toString())
+            }
             if (intent.hasExtra(AppConstance.LIST_SONG_KEY)) {
                 listSongs =
                     intent.getParcelableArrayListExtra(AppConstance.LIST_SONG_KEY) ?: arrayListOf()
+            }
+            if (intent.hasExtra("pending")) {
+                isClickPending = intent.getBooleanExtra("pending", false)
+            }
+            if (intent.hasExtra(AppConstance.CHECK_IS_PLAY)){
+                isPlaying = intent.getBooleanExtra(AppConstance.CHECK_IS_PLAY , false)
+            }
+            if (intent.hasExtra(AppConstance.DURATION_POSITION)){
+                duration = intent.getIntExtra(AppConstance.DURATION_POSITION , 0)
             }
         }
     }
@@ -107,7 +129,8 @@ class PlaySongActivity : AppCompatActivity() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent != null) {
                 if (intent.action == "ACTION_CHECK") {
-                    val positionListener = intent.getIntExtra(AppConstance.CHANGE_POSITION_FROM_SERVICE, 0)
+                    val positionListener =
+                        intent.getIntExtra(AppConstance.CHANGE_POSITION_FROM_SERVICE, 0)
                     duration = intent.getIntExtra(AppConstance.DURATION_POSITION, 0)
                     isPlaying = intent.getBooleanExtra(AppConstance.CHECK_IS_PLAY, false)
                     updateButtonPlay()
@@ -130,7 +153,7 @@ class PlaySongActivity : AppCompatActivity() {
 
     }
 
-    private fun updateBackground(positionListener : Int){
+    private fun updateBackground(positionListener: Int) {
         Picasso.get().load(listSongs[positionListener].imageSong).into(imgBackground)
     }
 
@@ -169,6 +192,11 @@ class PlaySongActivity : AppCompatActivity() {
 
         btnPlay?.setOnClickListener {
             playSong()
+        }
+
+        toolBarPlaySong?.setNavigationOnClickListener {
+            val intent = Intent(this@PlaySongActivity, MainActivity::class.java)
+            startActivity(intent)
         }
     }
 

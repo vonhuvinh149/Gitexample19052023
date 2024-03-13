@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/img_background_banner"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="220dp"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,18 +55,18 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_title_banner"
             android:layout_toEndOf="@+id/img_banner">
+
             <TextView
                 android:id="@+id/tv_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="40dp"
-                android:maxLines="2"
                 android:ellipsize="end"
+                android:maxLines="2"
                 android:text="Chao mung ban den voi ca khuc hot hien nay"
                 android:textColor="@color/smoke"
                 android:textSize="13sp" />
         </RelativeLayout>
-
 
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
