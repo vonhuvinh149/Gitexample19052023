@@ -107,7 +107,6 @@ class PlaySongActivity : AppCompatActivity() {
         if (intent != null) {
             if (intent.hasExtra(AppConstance.POSITION_SONG_KEY)) {
                 position = intent.getIntExtra(AppConstance.POSITION_SONG_KEY, 0)
-                Log.d("BBB", position.toString())
             }
             if (intent.hasExtra(AppConstance.LIST_SONG_KEY)) {
                 listSongs =
