@@ -112,8 +112,9 @@ class SearchFragment : Fragment() {
             override fun onClick(position: Int) {
                 hideKeyboard()
                 val intent = Intent(requireContext(), PlaySongActivity::class.java)
-                intent.putExtra(AppConstance.POSITION_SONG_KEY, position)
-                intent.putExtra(AppConstance.LIST_SONG_KEY, ArrayList(listSongs))
+                val newLists: MutableList<Song> = mutableListOf(listSongs[position])
+                intent.putExtra(AppConstance.POSITION_SONG_KEY, 0)
+                intent.putExtra(AppConstance.LIST_SONG_KEY, ArrayList(newLists))
                 startActivity(intent)
             }
         })

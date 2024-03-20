@@ -6,12 +6,12 @@
     android:padding="5dp">
 
     <ImageView
+        android:background="@drawable/custom_border_radius"
         android:id="@+id/img_song_nof"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:alpha=".7"
         android:scaleType="centerCrop"
         android:src="@drawable/img_logo" />
 

@@ -6,6 +6,8 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Build
@@ -16,19 +18,20 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.android.my_app_music.R
 import com.android.my_app_music.common.AppConstance
-import com.android.my_app_music.data.SongSharedPreference
 import com.android.my_app_music.data.model.Song
 import com.android.my_app_music.data.receiver.CurrentPositionReceiver
 import com.android.my_app_music.data.receiver.DataChangeReceiver
 import com.android.my_app_music.data.receiver.NotificationReceiver
 import com.android.my_app_music.presentation.view.activity.PlaySongActivity
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import java.io.IOException
+import java.lang.Exception
 import kotlin.random.Random
 
 class SongService : Service() {
 
     private val CHANEL_ID = "my-chanel"
-    private lateinit var songSharedPreference: SongSharedPreference
     private var mediaPlayer: MediaPlayer? = null
     private lateinit var notificationManager: NotificationManager
     private var position: Int = 0
@@ -60,7 +63,6 @@ class SongService : Service() {
     override fun onCreate() {
         super.onCreate()
         mediaPlayer = MediaPlayer()
-        songSharedPreference = SongSharedPreference(this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -101,7 +103,7 @@ class SongService : Service() {
                 newPosition = intent.getIntExtra(AppConstance.POSITION_SONG_KEY, 0)
             }
             handleActionNotification(actionMusic)
-            createNotification()
+            createNotification(this)
 
             val intentReceiver = Intent(this, DataChangeReceiver::class.java)
             intentReceiver.putExtra(AppConstance.CHANGE_POSITION_FROM_SERVICE, position)
@@ -144,6 +146,23 @@ class SongService : Service() {
         remoteView.setImageViewResource(R.id.btn_next_nof, R.drawable.ic_next)
         remoteView.setImageViewResource(R.id.btn_clear_nof, R.drawable.ic_close)
 
+        Picasso.get().load(listSongs[position].imageSong).into(object : Target {
+            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                if (bitmap != null) {
+                    remoteView.setImageViewBitmap(R.id.img_song_nof, bitmap)
+                }
+            }
+
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+                remoteView.setImageViewResource(R.id.img_song_nof, R.drawable.img_logo)
+            }
+
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+            }
+
+        })
+
+
         remoteView.setOnClickPendingIntent(
             R.id.btn_clear_nof,
             getPendingIntent(this, ACTION_CLEAR)
@@ -174,7 +193,7 @@ class SongService : Service() {
         return remoteView
     }
 
-    private fun createNotification() {
+    private fun createNotification(context: Context) {
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val intent = Intent(this@SongService, PlaySongActivity::class.java)
@@ -190,21 +209,19 @@ class SongService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notification = NotificationCompat.Builder(this, CHANEL_ID)
+        val notification = NotificationCompat.Builder(context, CHANEL_ID)
             .setSmallIcon(R.drawable.ic_music)
             .setCustomContentView(setupRemoteView())
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent).setSound(null)
             .setCustomBigContentView(setupRemoteView())
+        notification.priority = NotificationCompat.PRIORITY_DEFAULT
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 CHANEL_ID,
                 "Version New",
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                description = "Channel Description"
-            }
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
 
             notificationChannel.setSound(null, null)
             notificationManager.createNotificationChannel(notificationChannel)
@@ -238,11 +255,11 @@ class SongService : Service() {
                 } else {
                     if (isShuffleSong) {
                         position = Random.nextInt(listSongs.size)
-                        createNotification()
+                        createNotification(this)
                         playSong(listSongs[position].songUrl ?: "")
                     } else {
                         nextSong()
-                        createNotification()
+                        createNotification(this)
                     }
                     val intentReceiver = Intent(this, DataChangeReceiver::class.java)
                     intentReceiver.putExtra(AppConstance.CHANGE_POSITION_FROM_SERVICE, position)
