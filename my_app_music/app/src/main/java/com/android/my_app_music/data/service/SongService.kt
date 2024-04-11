@@ -113,7 +113,7 @@ class SongService : Service() {
 
         }
 
-        return START_STICKY
+        return START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {
